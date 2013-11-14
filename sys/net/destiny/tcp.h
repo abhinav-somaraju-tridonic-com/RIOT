@@ -89,7 +89,7 @@ mutex_t				global_context_counter_mutex;
 uint8_t				global_context_counter;
 #endif
 
-mutex_t				global_sequence_clunter_mutex;
+mutex_t				global_sequence_counter_mutex;
 uint32_t			global_sequence_counter;
 
 void tcp_packet_handler(void);

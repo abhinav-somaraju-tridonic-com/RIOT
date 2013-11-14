@@ -135,9 +135,9 @@ void check_sockets(void)
 
 void inc_global_variables(void)
 {
-    mutex_lock(&global_sequence_clunter_mutex);
+    mutex_lock(&global_sequence_counter_mutex);
     global_sequence_counter += rand();
-    mutex_unlock(&global_sequence_clunter_mutex);
+    mutex_unlock(&global_sequence_counter_mutex);
 #ifdef TCP_HC
     mutex_lock(&global_context_counter_mutex);
     global_context_counter += rand();
@@ -147,13 +147,16 @@ void inc_global_variables(void)
 
 void tcp_general_timer(void)
 {
+    puts("|| Setup tcp general timer");
     vtimer_t tcp_vtimer;
     timex_t interval = timex_set(0, TCP_TIMER_RESOLUTION);
 
     while (1) {
+        puts("## One up");
         inc_global_variables();
         check_sockets();
         vtimer_set_wakeup(&tcp_vtimer, interval, thread_getpid());
+        puts("## Going to sleep");
         thread_sleep();
     }
 }
