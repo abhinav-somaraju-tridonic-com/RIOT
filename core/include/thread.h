@@ -9,13 +9,12 @@
 /**
  * @defgroup    core_thread Threading
  * @ingroup     core
- * @brief		Support for multi-threading
+ * @brief       Support for multi-threading
  * @{
- */
- 
-/**
+ *
  * @file
- * @brief		Threading API
+ * @brief       Threading API
+ *
  * @author      Freie Universität Berlin, Computer Systems & Telematics
  * @author      Kaspar Schleiser <kaspar@schleiser.de>
  */
@@ -29,7 +28,7 @@
 
 /** Minimum stack size */
 #ifndef MINIMUM_STACK_SIZE
-#define MINIMUM_STACK_SIZE	(sizeof(tcb_t))
+#define MINIMUM_STACK_SIZE  (sizeof(tcb_t))
 #endif
 
 /**

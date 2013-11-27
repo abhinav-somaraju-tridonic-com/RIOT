@@ -7,12 +7,12 @@
  */
  
 /**
- * @ingroup 	core_util
+ * @ingroup     core_util
  * @{
- * @file		queue.c
- * @brief		A simple queue implementation
+ * @file        queue.c
+ * @brief       A simple queue implementation
  * @author      Freie Universität Berlin, Computer Systems & Telematics
- * @author 		Kaspar Schleiser <kaspar.schleiser@fu-berlin.de>
+ * @author      Kaspar Schleiser <kaspar.schleiser@fu-berlin.de>
  * @}
  */
 

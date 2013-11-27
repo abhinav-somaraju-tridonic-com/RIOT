@@ -7,11 +7,11 @@
  */
  
 /**
- * @ingroup 	core_util
+ * @ingroup     core_util
  * @{
- * @file 		bitarithm.c
- * @brief 		Bit arithmetic helper functions implementation
- * @author 		Kaspar Schleiser <kaspar.schleiser@fu-berlin.de>
+ * @file        bitarithm.c
+ * @brief       Bit arithmetic helper functions implementation
+ * @author      Kaspar Schleiser <kaspar.schleiser@fu-berlin.de>
  * @author      Martin Lenders <mlenders@inf.fu-berlin.de>
  * @}
  */

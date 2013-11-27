@@ -7,13 +7,12 @@
  */
 
 /**
- * @addtogroup	core_util
+ * @addtogroup  core_util
  * @{
- */
- 
-/**
- * @file		oneway_malloc.h
- * @brief		Malloc interface
+ *
+ * @file        oneway_malloc.h
+ * @brief       Malloc interface
+ *
  * @author      Freie Universität Berlin, Computer Systems & Telematics
  * @author      Kaspar Schleiser <kaspar@schleiser.de>
  */
@@ -28,8 +27,5 @@ void *_realloc(void *ptr, size_t size);
 void *_calloc(int size, size_t cnt);
 void _free(void *ptr);
 
-/**
- * @}
- */
-
+/** @} */
 #endif /* _MALLOC_H */

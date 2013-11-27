@@ -7,15 +7,14 @@
  */
  
 /**
- * @addtogroup	core_util
+ * @addtogroup  core_util
  * @{
- */
-
-/**
- * @file		atomic.h
- * @brief		Atomic function declarations
- * @author 		Freie Universität Berlin, Computer Systems & Telematics
- * @author		Kaspar Schleiser <kaspar.schleiser@fu-berlin.de>
+ *
+ * @file        atomic.h
+ * @brief       Atomic function declarations
+ *
+ * @author      Freie Universität Berlin, Computer Systems & Telematics
+ * @author      Kaspar Schleiser <kaspar.schleiser@fu-berlin.de>
  */
 
 #ifndef _ATOMIC_H
@@ -27,7 +26,5 @@
 
 extern unsigned int atomic_set_return(unsigned int *val, unsigned int set);
 
-/**
- * @}
- */
+/** @} */
 #endif /* _ATOMIC_H */

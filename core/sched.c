@@ -7,16 +7,16 @@
  */
 
 /**
- * @ingroup 	core_shed
+ * @ingroup     core_shed
  * @{
- * @file		shed.c
- * @brief		Scheduler implementation
+ * @file        shed.c
+ * @brief       Scheduler implementation
  * @author      Freie Universität Berlin, Computer Systems & Telematics
- * @author 		Kaspar Schleiser <kaspar.schleiser@fu-berlin.de>
+ * @author      Kaspar Schleiser <kaspar.schleiser@fu-berlin.de>
  * @}
+ *
+ * TODO: setup dependency from SCHEDSTATISTICS to MODULE_HWTIMER 
  */
-
-/* TODO: setup dependency from SCHEDSTATISTICS to MODULE_HWTIMER */
 
 #include <stdint.h>
 #include <sched.h>

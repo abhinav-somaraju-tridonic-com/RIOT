@@ -7,16 +7,14 @@
  */
 
 /**
- * @addtogroup	core_internal
+ * @addtogroup  core_internal
  * @{
+ *
+ * @file        config.h
+ * @brief       Kernel configuration interface
+ *
+ * @author      unknown
  */
- 
-/**
- * @file		config.h
- * @brief		Kernel configuration interface
- * @author		TODO
- */
-
 
 #ifndef CONFIG_H
 #define CONFIG_H
@@ -56,8 +54,5 @@ uint8_t config_save(void);
  */
 void config_load(void);
 
-/**
- * @}
- */
-
+/** @} */
 #endif /* CONFIG_H */

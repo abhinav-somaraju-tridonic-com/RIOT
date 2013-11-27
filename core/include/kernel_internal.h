@@ -7,15 +7,14 @@
  */
 
 /**
- * @addtogroup	core_internal
+ * @addtogroup  core_internal
  * @{
- */
- 
-/**
+ *
  * @file        kernel_internal.h
- * @brief       prototypes for kernel internal functions
+ * @brief       Prototypes for kernel internal functions
+ *
  * @author      INRIA
- * @author		Oliver Hahm <oliver.hahm@inria.fr>
+ * @author      Oliver Hahm <oliver.hahm@inria.fr>
  */
 
 #ifndef KERNEL_INTERNAL_H_
@@ -61,7 +60,5 @@ void thread_print_stack(void);
  */
 int thread_measure_stack_usage(char *stack);
 
-/**
- * @}
- */
+/** @} */
 #endif /* KERNEL_INTERNAL_H_ */

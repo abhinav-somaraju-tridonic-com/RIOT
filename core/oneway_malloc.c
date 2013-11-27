@@ -10,14 +10,14 @@
  * details.
 
 /**
- * @ingroup		core_util
+ * @ingroup     core_util
  * @{
- * @file		oneway_malloc.c
- * @brief		Simple malloc wrapper for SBRK
+ * @file        oneway_malloc.c
+ * @brief       Simple malloc wrapper for SBRK
  * 
  * Simple malloc implementation for plattforms without malloc in libc.
  * 
- * @author 		Kaspar Schleiser <kaspar.schleiser@fu-berlin.de>
+ * @author      Kaspar Schleiser <kaspar.schleiser@fu-berlin.de>
  * @}
  */
 

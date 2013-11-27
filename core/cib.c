@@ -7,11 +7,10 @@
  */
  
  /**
- * @ingroup 	core_util
+ * @ingroup     core_util
  * @{
- * @file		cib.c
- * @brief		TODO
- * @author      TODO
+ * @file        cib.c
+ * @author      unknown
  * @}
  */
 

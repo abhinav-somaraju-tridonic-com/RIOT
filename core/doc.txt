@@ -15,13 +15,13 @@
  */
  
 /**
- * @defgroup 	core_util Kernel utilities
- * @ingroup 	core
- * @brief		Utilies and data structures used by the kernel
+ * @defgroup    core_util Kernel utilities
+ * @ingroup     core
+ * @brief       Utilies and data structures used by the kernel
  */
  
 /**
- * @defgroup	core_internal Startup and Configuration
- * @ingroup		core
- * @brief		Configuration data and startup code for the kernel
+ * @defgroup    core_internal Startup and Configuration
+ * @ingroup     core
+ * @brief       Configuration data and startup code for the kernel
  */

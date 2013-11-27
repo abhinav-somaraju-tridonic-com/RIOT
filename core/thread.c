@@ -7,11 +7,11 @@
  */
  
 /**
- * @ingroup 	core_thread
+ * @ingroup     core_thread
  * @{
- * @file		thread.c
- * @brief		Threading implementation
- * @author 		Kaspar Schleiser <kaspar.schleiser@fu-berlin.de>
+ * @file        thread.c
+ * @brief       Threading implementation
+ * @author      Kaspar Schleiser <kaspar.schleiser@fu-berlin.de>
  * @}
  */
 

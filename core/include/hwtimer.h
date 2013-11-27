@@ -7,9 +7,9 @@
  */
 
 /**
- * @defgroup	core_hwtimer Hardware timer
- * @ingroup		core
- * @brief		Hardware timer interface
+ * @defgroup    core_hwtimer Hardware timer
+ * @ingroup     core
+ * @brief       Hardware timer interface
  *
  * The Hardware timers are directly mapped to hardware timers with minimum
  * latency. They are intended for short intervals and to be used in time
@@ -21,15 +21,14 @@
  * instead.
  *
  * @{
- /*
- 
-/**
- * @file		hwtimer.h
- * @brief		HW-timer abstraction
- * @author 		Freie Universität Berlin, Computer Systems & Telematics
- * @author 		Heiko Will
- * @author 		Kaspar Schleiser <kaspar@schleiser.de>
- * @author 		Michael Baar
+ *
+ * @file        hwtimer.h
+ * @brief       HW-timer abstraction
+ *
+ * @author      Freie Universität Berlin, Computer Systems & Telematics
+ * @author      Heiko Will
+ * @author      Kaspar Schleiser <kaspar@schleiser.de>
+ * @author      Michael Baar
  */
 
 #ifndef __HWTIMER_H
@@ -117,12 +116,9 @@ void hwtimer_spin(unsigned long ticks);
 
 int hwtimer_active(void);
 
-/**
- * @}
- */
+/** @} */
 
 /* internal */
-
 /**
  * @brief    TODO
  * @internal

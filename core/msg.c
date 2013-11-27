@@ -7,13 +7,13 @@
  */
  
 /**
- * @ingroup 	core_msg
+ * @ingroup     core_msg
  * @{
  * @file
- * @brief		Kernel messaging implementation
- * @author 		Freie Universität Berlin, Computer Systems & Telematics, FeuerWhere project
- * @author 		Kaspar Schleiser <kaspar.schleiser@fu-berlin.de>
- * @author 		Oliver Hahm <oliver.hahm@inria.fr>
+ * @brief       Kernel messaging implementation
+ * @author      Freie Universität Berlin, Computer Systems & Telematics, FeuerWhere project
+ * @author      Kaspar Schleiser <kaspar.schleiser@fu-berlin.de>
+ * @author      Oliver Hahm <oliver.hahm@inria.fr>
  * @}
  */
 

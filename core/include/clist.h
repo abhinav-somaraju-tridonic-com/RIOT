@@ -7,15 +7,14 @@
  */
  
 /**
- * @addtogroup	core_util
+ * @addtogroup  core_util
  * @{
- */
- 
-/**
- * @file		clist.h
- * @brief		Circular linkes list
- * @author		Freie Universität Berlin, Computer Systems & Telematics
- * @author 		Kaspar Schleiser <kaspar.schleiser@fu-berlin.de>
+ *
+ * @file        clist.h
+ * @brief       Circular linkes list
+ *
+ * @author      Freie Universität Berlin, Computer Systems & Telematics
+ * @author      Kaspar Schleiser <kaspar.schleiser@fu-berlin.de>
  */
 
 #ifndef __CLIST_H
@@ -45,8 +44,6 @@ static inline void clist_advance(clist_node_t **list)
 void clist_print(clist_node_t *clist);
 #endif
 
-/**
- * @}
- */
+/** @} */
 #endif // __CLIST_H
 

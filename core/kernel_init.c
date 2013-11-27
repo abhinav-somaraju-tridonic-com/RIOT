@@ -7,11 +7,11 @@
  */
 
 /**
- * @ingroup 	core_internal
+ * @ingroup     core_internal
  * @{
- * @file		kernel_init.c
- * @brief		Platform-independent kernel initilization
- * @author 		Kaspar Schleiser <kaspar.schleiser@fu-berlin.de>
+ * @file        kernel_init.c
+ * @brief       Platform-independent kernel initilization
+ * @author      Kaspar Schleiser <kaspar.schleiser@fu-berlin.de>
  * @}
  */
 

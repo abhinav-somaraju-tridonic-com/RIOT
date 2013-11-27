@@ -9,13 +9,12 @@
 /**
  * @defgroup    core_irq     IRQ Handling
  * @ingroup     core
- * @brief		Provides an API to control interrupt processing
+ * @brief       Provides an API to control interrupt processing
  * @{
- */
-
-/**
- * @file		irq.h
+ *
+ * @file        irq.h
  * @brief       IRQ driver interface
+ *
  * @author      Freie Universität Berlin, Computer Systems & Telematics
  */
 
@@ -58,7 +57,5 @@ void restoreIRQ(unsigned state);
  */
 int inISR(void);
 
-/** 
- * @} 
- */
+/** @} */
 #endif /* IRQ_H_ */

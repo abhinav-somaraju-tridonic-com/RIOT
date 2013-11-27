@@ -9,7 +9,7 @@
 /**
  * @defgroup    core_msg  Messaging / IPC
  * @ingroup     core
- * @brief		Messaging API for inter process communication
+ * @brief       Messaging API for inter process communication
  *
  * There are two ways to use the IPC Messaging system of RIOT. The default is synchronous
  * messaging. In this manner, messages are either dropped when the receiver is not waiting and the
@@ -18,13 +18,11 @@
  * calling msg_init_queue(msg_t* array, int num). Messages sent to a thread with a non full message
  * queue are never dropped and the sending never blocks. Threads with a full message queue behaves
  * like in synchronous mode.
- * 
- * @{ 
- */
-
-/**
- * @file		msg.h
- * @brief		Messaging API for inter process communication
+ * @{
+ *
+ * @file        msg.h
+ * @brief       Messaging API for inter process communication
+ *
  * @author      Freie Universität Berlin, Computer Systems & Telematics
  * @author      Kaspar Schleiser <kaspar@schleiser.de>
  */

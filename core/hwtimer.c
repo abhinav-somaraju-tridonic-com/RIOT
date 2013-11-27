@@ -7,10 +7,10 @@
  */
  
 /**
- * @ingroup 	core_hwtimer
+ * @ingroup     core_hwtimer
  * @{
  * @file
- * @brief		Hardware timer abstraction implementation
+ * @brief       Hardware timer abstraction implementation
  * @author      Heiko Will <hwill@inf.fu-berlin.de>
  * @author      Thomas Hillebrandt <hillebra@inf.fu-berlin.de>
  * @author      Kaspar Schleiser <kaspar.schleiser@fu-berlin.de>

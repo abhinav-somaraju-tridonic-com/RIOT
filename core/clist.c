@@ -7,11 +7,11 @@
  */
  
 /**
- * @ingroup 	core_util
+ * @ingroup     core_util
  * @{
- * @file		clist.c
- * @brief		Circular linked list implementation
- * @author 		Kaspar Schleiser <kaspar.schleiser@fu-berlin.de>
+ * @file        clist.c
+ * @brief       Circular linked list implementation
+ * @author      Kaspar Schleiser <kaspar.schleiser@fu-berlin.de>
  * @}
  */
 

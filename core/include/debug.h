@@ -7,18 +7,16 @@
  */
  
 /**
- * @addtogroup	core_util
+ * @addtogroup  core_util
  * @{
- */
- 
-/**
- * @file		debug.h
- * @brief		Debug-header
+ *
+ * @file        debug.h
+ * @brief       Debug-header
  *
  * #define ENABLE_DEBUG, include this and then use DEBUG as printf you can toggle.
  *
- * @author 		Freie Universität Berlin, Computer Systems & Telematics
- * @author 		Kaspar Schleiser <kaspar.schleiser@fu-berlin.de>
+ * @author      Freie Universität Berlin, Computer Systems & Telematics
+ * @author      Kaspar Schleiser <kaspar.schleiser@fu-berlin.de>
  */
  
 #ifndef __DEBUG_H
@@ -33,8 +31,5 @@
 #define DEBUG(...)
 #endif
 
-/**
- * @}
- */
-
+/** @} */
 #endif /* __DEBUG_H */

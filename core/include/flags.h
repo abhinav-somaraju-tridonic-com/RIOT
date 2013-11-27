@@ -7,27 +7,21 @@
  */
 
 /**
- * @addtogroup	core_internal
+ * @addtogroup  core_internal
  * @{
- */
- 
-/**
- * @file		flags.h
- * @brief		Misc flag definitions
- * @author 		Kaspar Schleiser <kaspar.schleiser@fu-berlin.de>
+ *
+ * @file        flags.h
+ * @brief       Misc flag definitions
+ * @author      Kaspar Schleiser <kaspar.schleiser@fu-berlin.de>
  */
 
 #ifndef _FLAGS_H
 #define _FLAGS_H
 
-#define CREATE_SLEEPING 	(1)
-#define AUTO_FREE 	        (2)
-#define CREATE_WOUT_YIELD 	(4)
-#define CREATE_STACKTEST 	(8)
+#define CREATE_SLEEPING     (1)
+#define AUTO_FREE           (2)
+#define CREATE_WOUT_YIELD   (4)
+#define CREATE_STACKTEST    (8)
 
-/**
- * @}
- */
-
+/** @} */
 #endif // _FLAGS_H
-

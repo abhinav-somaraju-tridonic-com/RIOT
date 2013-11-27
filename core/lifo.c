@@ -7,11 +7,11 @@
  */
 
 /**
- * @ingroup		core_util
+ * @ingroup     core_util
  * @{
- * @file		lifo.c
- * @brief		LIFO buffer implementation
- * @author		TODO
+ * @file        lifo.c
+ * @brief       LIFO buffer implementation
+ * @author      unknown
  * @}
  */
 

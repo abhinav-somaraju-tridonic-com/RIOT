@@ -7,28 +7,27 @@
  */
  
 /** 
- * @addtogroup	core_util
+ * @addtogroup  core_util
  * @{
- */
- 
-/**
- * @file		bitarithm.h
- * @brief 		Helper functions for bit arithmetic
- * @author 		Freie Universität Berlin, Computer Systems & Telematics
- * @author 		Kaspar Schleiser <kaspar.schleiser@fu-berlin.de>
+ *
+ * @file        bitarithm.h
+ * @brief       Helper functions for bit arithmetic
+ *
+ * @author      Freie Universität Berlin, Computer Systems & Telematics
+ * @author      Kaspar Schleiser <kaspar.schleiser@fu-berlin.de>
  * @author      Martin Lenders <mlenders@inf.fu-berlin.de>
  */
 
 #ifndef BITARITHM_H_
 #define BITARITHM_H_
 
-#define BS(val, bit)		((val) & (bit))
-#define BS_COND(condition, target, mask)		(target) ^= ( (-(condition) ^ (target)) & (mask) )
-#define SETBIT(val, bit)	val |= (bit)
-#define CLRBIT(val, bit)	val &= (~(bit))
+#define BS(val, bit)        ((val) & (bit))
+#define BS_COND(condition, target, mask)        (target) ^= ( (-(condition) ^ (target)) & (mask) )
+#define SETBIT(val, bit)    val |= (bit)
+#define CLRBIT(val, bit)    val &= (~(bit))
 
 /**
- * @name	Single Bit Defines
+ * @name    Single Bit Defines
  * @{
  */
 #ifndef BIT0
@@ -72,30 +71,27 @@
 #define ARCH_32_BIT   (__INT_MAX__ == 2147483647)
 
 /**
- * @brief	Returns the number of the highest '1' bit in a value
- * @param[in]	v	Input value
- * @return			Bit Number
+ * @brief   Returns the number of the highest '1' bit in a value
+ * @param[in]   v   Input value
+ * @return          Bit Number
  *
  * Source: http://graphics.stanford.edu/~seander/bithacks.html#IntegerLogObvious
  */
 unsigned number_of_highest_bit(unsigned v);
 
 /**
- * @brief	Returns the number of the lowest '1' bit in a value
- * @param[in]	v	Input value
- * @return			Bit Number, 0 for least significant bit, -1 if input is 0
+ * @brief   Returns the number of the lowest '1' bit in a value
+ * @param[in]   v   Input value
+ * @return          Bit Number, 0 for least significant bit, -1 if input is 0
  */
 #define number_of_lowest_bit(v) (__builtin_ffs(v)-1)
 
 /**
- * @brief	Returns the number of bits set in a value
- * @param[in]	v	Input value
- * @return			Number of set bits
+ * @brief   Returns the number of bits set in a value
+ * @param[in]   v   Input value
+ * @return          Number of set bits
  */
 #define number_of_bits_set(v) (__builtin_popcount(v))
 
-/**
- * @}
- */
-
+/** @} */
 #endif /* BITARITHM_H_ */

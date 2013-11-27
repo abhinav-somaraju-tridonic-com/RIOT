@@ -7,15 +7,14 @@
  */
 
 /**
- * @defgroup 	core_sync Synchronization
- * @brief		Mutex for thread synchronization
- * @ingroup 	core
+ * @defgroup    core_sync Synchronization
+ * @brief       Mutex for thread synchronization
+ * @ingroup     core
  * @{
- */
-
-/**
- * @file		mutex.h
- * @brief		RIOT synchronization API
+ *
+ * @file        mutex.h
+ * @brief       RIOT synchronization API
+ *
  * @author      Freie Universität Berlin, Computer Systems & Telematics
  * @author      Kaspar Schleiser <kaspar@schleiser.de>
  */
@@ -84,4 +83,3 @@ void mutex_wait(struct mutex_t *mutex);
 
 /** @} */
 #endif /* _MUTEX_H */
-

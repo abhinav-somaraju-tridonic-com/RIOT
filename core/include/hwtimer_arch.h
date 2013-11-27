@@ -7,17 +7,16 @@
  */
  
 /**
- * @addtogroup	core_hwtimer
+ * @addtogroup  core_hwtimer
  * @{
- */
- 
-/**
- * @file		hwtimer_arch.h
- * @brief		Architecture specific hwtimer API
- * @author 		Freie Universität Berlin, Computer Systems & Telematics
- * @author 		Thomas Hillebrandt <hillebra@inf.fu-berlin.de>
- * @author 		Heiko Will <hwill@inf.fu-berlin.de>
- * @author 		Kaspar Schleiser <kaspar.schleiser@fu-berlin.de>
+ *
+ * @file        hwtimer_arch.h
+ * @brief       Architecture specific hwtimer API
+ *
+ * @author      Freie Universität Berlin, Computer Systems & Telematics
+ * @author      Thomas Hillebrandt <hillebra@inf.fu-berlin.de>
+ * @author      Heiko Will <hwill@inf.fu-berlin.de>
+ * @author      Kaspar Schleiser <kaspar.schleiser@fu-berlin.de>
  */
  
 #ifndef HWTIMER_ARCH_H_
@@ -61,7 +60,5 @@ void hwtimer_arch_unset(short timer);
  */
 unsigned long hwtimer_arch_now(void);
 
-/**
- * @}
- */
+/** @} */
 #endif /* HWTIMER_ARCH_H_ */

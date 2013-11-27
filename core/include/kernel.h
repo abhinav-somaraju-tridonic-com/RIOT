@@ -7,15 +7,14 @@
  */
 
 /**
- * @addtogroup	core_internal
+ * @addtogroup  core_internal
  * @{
- */
-
-/**
- * @file		kernel.h
- * @brief		Kernel compile time configuration
- * @author		Freie Universität Berlin, Computer Systems & Telematics
- * @author		Kaspar Schleiser <kaspar.schleiser@fu-berlin.de>
+ *
+ * @file        kernel.h
+ * @brief       Kernel compile time configuration
+ *
+ * @author      Freie Universität Berlin, Computer Systems & Telematics
+ * @author      Kaspar Schleiser <kaspar.schleiser@fu-berlin.de>
  */
 
 #ifndef KERNEL_H_
@@ -78,8 +77,5 @@ extern volatile int lpm_prevent_sleep;
 
 extern config_t sysconfig;
 
-/**
- * @}
- */
- 
+/** @} */
 #endif /* KERNEL_H_ */

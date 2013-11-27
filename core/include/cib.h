@@ -7,14 +7,13 @@
  */
  
  /**
- * @addtogroup 	core_util
+ * @addtogroup  core_util
  * @{
- */
- 
-/**
- * @file		cib.h
- * @brief		TODO
- * @author      TODO
+ *
+ * @file        cib.h
+ * @brief
+ *
+ * @author      unknown
  */
 
 #ifndef __CIB_H
@@ -31,7 +30,5 @@ int cib_get(cib_t *cib);
 int cib_put(cib_t *cib);
 int cib_avail(cib_t *cib);
 
-/**
- * @}
- */
+/** @} */
 #endif /* __CIB_H */

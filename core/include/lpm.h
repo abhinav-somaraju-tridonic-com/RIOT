@@ -9,12 +9,10 @@
 /**
  * @defgroup    core_lpm Power Management
  * @ingroup     core
- * @brief		The kernels power management interface
+ * @brief       The kernels power management interface
  * @{
- */
-
-/**
- * @file		lpm.h
+ *
+ * @file        lpm.h
  * @brief       Power management interface
  *
  * This interface needs to be implemented for each platform.
@@ -61,8 +59,5 @@ void lpm_end_awake(void);
 enum lpm_mode lpm_get(void);
 
 
-/**
- * @}
- */
-
+/** @} */
 #endif /* LPM_H_ */

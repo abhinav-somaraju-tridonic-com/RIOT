@@ -7,14 +7,13 @@
  */
 
 /**
- * @addtogroup	core_util
+ * @addtogroup  core_util
  * @{
- */
- 
-/**
- * @file		lifo.h
- * @brief		LIFO buffer API
- * @author		TODO
+ *
+ * @file        lifo.h
+ * @brief       LIFO buffer API
+ *
+ * @author      unknwon
  */
 
 #ifndef __LIFO_H
@@ -25,8 +24,5 @@ void lifo_init(int *array, int n);
 void lifo_insert(int *array, int i);
 int lifo_get(int *array);
 
-/**
- * @}
- */
-
+/** @} */
 #endif /* __LIFO_H */

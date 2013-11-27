@@ -7,15 +7,14 @@
  */
 
 /**
- * @defgroup	core_sched Scheduler
- * @ingroup 	core
- * @brief		The RIOT scheduler
+ * @defgroup    core_sched Scheduler
+ * @ingroup     core
+ * @brief       The RIOT scheduler
  * @{
- */
- 
-/**
+ *
  * @file        sched.h
- * @brief		Scheduler API definion
+ * @brief       Scheduler API definion
+ *
  * @author      Freie Universität Berlin, Computer Systems & Telematics
  * @author      Kaspar Schleiser <kaspar@schleiser.de>
  */
