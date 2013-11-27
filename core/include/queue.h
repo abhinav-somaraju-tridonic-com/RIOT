@@ -1,7 +1,22 @@
+/*
+ * Copyright (C) 2013 Freie Universität Berlin
+ *
+ * This file subject to the terms and conditions of the GNU Lesser General
+ * Public License. See the file LICENSE in the top level directory for more
+ * details.
+ */
+
 /**
- * @ingroup kernel
+ * @addtogroup 	core_util
  * @{
- * @file
+ */
+ 
+/**
+ * @file		queue.h
+ * @brief		A simple queue implementation
+ *
+ * TODO document functions and datastructures
+ *
  * @author      Freie Universität Berlin, Computer Systems & Telematics
  * @author      Kaspar Schleiser <kaspar@schleiser.de>
  */
@@ -36,5 +51,8 @@ void queue_print(queue_node_t *node);
 void queue_print_node(queue_node_t *node);
 #endif
 
-/** @} */
-#endif // __QUEUE_H
+/**
+ * @}
+ */
+
+#endif /* __QUEUE_H */

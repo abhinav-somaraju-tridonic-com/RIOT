@@ -1,17 +1,28 @@
-#ifndef __THREAD_H
-#define __THREAD_H
-
-/**
- * @defgroup    thread  Threading
- * @ingroup     kernel
- * @{
+/*
+ * Copyright (C) 2013 Freie Universität Berlin
+ *
+ * This file subject to the terms and conditions of the GNU Lesser General
+ * Public License. See the file LICENSE in the top level directory for more
+ * details.
  */
 
 /**
+ * @defgroup    core_thread Threading
+ * @ingroup     core
+ * @brief		Support for multi-threading
+ * @{
+ */
+ 
+/**
  * @file
+ * @brief		Threading API
  * @author      Freie Universität Berlin, Computer Systems & Telematics
  * @author      Kaspar Schleiser <kaspar@schleiser.de>
  */
+
+#ifndef __THREAD_H
+#define __THREAD_H
+
 
 #include <kernel.h>
 #include <tcb.h>

@@ -1,24 +1,29 @@
-#ifndef LPM_H_
-#define LPM_H_
+/*
+ * Copyright (C) 2013 Freie Universität Berlin
+ *
+ * This file subject to the terms and conditions of the GNU Lesser General
+ * Public License. See the file LICENSE in the top level directory for more
+ * details.
+ */
 
 /**
- * @defgroup    lpm     Power Management
- * @ingroup     kernel
+ * @defgroup    core_lpm Power Management
+ * @ingroup     core
+ * @brief		The kernels power management interface
  * @{
  */
 
 /**
- * @file
- * @brief       Power Management Interface
- *
- * @author      Freie Universität Berlin, Computer Systems & Telematics
- * @version     $Revision$
+ * @file		lpm.h
+ * @brief       Power management interface
  *
  * This interface needs to be implemented for each platform.
  *
- * @note        $Id$
+ * @author      Freie Universität Berlin, Computer Systems & Telematics
  */
 
+#ifndef LPM_H_
+#define LPM_H_
 
 /**
  * @brief   Available power modes
@@ -56,5 +61,8 @@ void lpm_end_awake(void);
 enum lpm_mode lpm_get(void);
 
 
-/** @} */
+/**
+ * @}
+ */
+
 #endif /* LPM_H_ */

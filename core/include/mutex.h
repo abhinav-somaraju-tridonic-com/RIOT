@@ -1,11 +1,21 @@
+/*
+ * Copyright (C) 2013 Freie Universität Berlin
+ *
+ * This file subject to the terms and conditions of the GNU Lesser General
+ * Public License. See the file LICENSE in the top level directory for more
+ * details.
+ */
+
 /**
- * @defgroup mutex Mutexes / Synchronization
- * @ingroup kernel
+ * @defgroup 	core_sync Synchronization
+ * @brief		Mutex for thread synchronization
+ * @ingroup 	core
  * @{
  */
 
 /**
- * @file
+ * @file		mutex.h
+ * @brief		RIOT synchronization API
  * @author      Freie Universität Berlin, Computer Systems & Telematics
  * @author      Kaspar Schleiser <kaspar@schleiser.de>
  */

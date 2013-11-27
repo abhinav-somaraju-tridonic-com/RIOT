@@ -1,4 +1,4 @@
-/**
+/*
  * simple malloc wrapper for sbrk
  *
  * Needed on platforms without malloc in libc, e.g. msb430
@@ -8,11 +8,16 @@
  * This file is subject to the terms and conditions of the GNU Lesser General
  * Public License. See the file LICENSE in the top level directory for more
  * details.
- *
- * @ingroup kernel
+
+/**
+ * @ingroup		core_util
  * @{
- * @file
- * @author Kaspar Schleiser <kaspar.schleiser@fu-berlin.de>
+ * @file		oneway_malloc.c
+ * @brief		Simple malloc wrapper for SBRK
+ * 
+ * Simple malloc implementation for plattforms without malloc in libc.
+ * 
+ * @author 		Kaspar Schleiser <kaspar.schleiser@fu-berlin.de>
  * @}
  */
 

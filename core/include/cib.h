@@ -1,3 +1,22 @@
+/*
+ * Copyright (C) 2013 Freie Universität Berlin
+ *
+ * This file subject to the terms and conditions of the GNU Lesser General
+ * Public License. See the file LICENSE in the top level directory for more
+ * details.
+ */
+ 
+ /**
+ * @addtogroup 	core_util
+ * @{
+ */
+ 
+/**
+ * @file		cib.h
+ * @brief		TODO
+ * @author      TODO
+ */
+
 #ifndef __CIB_H
 #define __CIB_H
 
@@ -12,4 +31,7 @@ int cib_get(cib_t *cib);
 int cib_put(cib_t *cib);
 int cib_avail(cib_t *cib);
 
+/**
+ * @}
+ */
 #endif /* __CIB_H */

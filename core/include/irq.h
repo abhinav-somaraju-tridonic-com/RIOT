@@ -1,22 +1,26 @@
-#ifndef IRQ_H_
-#define IRQ_H_
+/*
+ * Copyright (C) 2013 Freie Universität Berlin
+ *
+ * This file subject to the terms and conditions of the GNU Lesser General
+ * Public License. See the file LICENSE in the top level directory for more
+ * details.
+ */
 
 /**
- * @defgroup    irq     IRQ Handling
- * @ingroup     kernel
- *
- * Provides an API to control interrupt processing.
- *
+ * @defgroup    core_irq     IRQ Handling
+ * @ingroup     core
+ * @brief		Provides an API to control interrupt processing
  * @{
  */
 
 /**
- * @file
+ * @file		irq.h
  * @brief       IRQ driver interface
- *
  * @author      Freie Universität Berlin, Computer Systems & Telematics
- *
  */
+
+#ifndef IRQ_H_
+#define IRQ_H_
 
 #include <stdbool.h>
 
@@ -54,5 +58,7 @@ void restoreIRQ(unsigned state);
  */
 int inISR(void);
 
-/** @} */ // end of group dev_irq
+/** 
+ * @} 
+ */
 #endif /* IRQ_H_ */

@@ -1,16 +1,22 @@
-/**
- * @ingroup kernel
- * @{
- * @file
- * @author      Freie Universität Berlin, Computer Systems & Telematics
- * @author      Kaspar Schleiser <kaspar@schleiser.de>
- */
-
 /*
- * tcb.h
+ * Copyright (C) 2013 Freie Universität Berlin
  *
- *  Created on: 19.08.2008
- *      Author: heiko, kaspar
+ * This file subject to the terms and conditions of the GNU Lesser General
+ * Public License. See the file LICENSE in the top level directory for more
+ * details.
+ */
+ 
+/**
+ * @addtogroup	core_thread
+ * @{
+ */
+ 
+/**
+ * @file		tcb.h
+ * @brief		TODO
+ * @author      Freie Universität Berlin, Computer Systems & Telematics
+ * @author		Heiko Will
+ * @author      Kaspar Schleiser <kaspar@schleiser.de>
  */
 
 #ifndef TCB_H_
@@ -55,5 +61,8 @@ typedef struct tcb_t {
     int stack_size;
 } tcb_t;
 
-/** @} */
+/**
+ * @}
+ */
+
 #endif /* TCB_H_ */
