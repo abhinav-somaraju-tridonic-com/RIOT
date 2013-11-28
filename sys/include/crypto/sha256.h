@@ -29,8 +29,10 @@
  
  
 /**
- * @defgroup    sys_sha256 SHA264
- * @ingroup     sys
+ * @ingroup     sys_crypto
+ * @{
+ * 
+ * @file        crypto/sha256.h
  * @brief       SHA264 hash generator
  */
 
@@ -84,4 +86,5 @@ void SHA256_Final(unsigned char digest[32], SHA256_CTX *ctx);
  */
 unsigned char *SHA256(const unsigned char *d, size_t n,unsigned char *md);
 
-#endif /* !_SHA256_H_ */
+/** @} */
+#endif /* _SHA256_H_ */

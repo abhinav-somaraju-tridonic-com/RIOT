@@ -29,7 +29,7 @@
 
 #include <string.h>
 
-#include "sha256.h"
+#include "crypto/sha256.h"
 
 #if __BYTE_ORDER__ == __ORDER_BIG_ENDIAN__
 /* Copy a vector of big-endian uint32_t into a vector of bytes */
