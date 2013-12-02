@@ -22,7 +22,7 @@
 #include "queue.h"
 #include "tcb.h"
 #include <stddef.h>
-#include <irq.h>
+#include "irq.h"
 #include <cib.h>
 #include <inttypes.h>
 
@@ -65,17 +65,17 @@ int msg_send(msg_t *m, unsigned int target_pid, bool block)
         return -1;
     }
 
-    dINT();
+    disableIRQ();
 
     if (target->status !=  STATUS_RECEIVE_BLOCKED) {
         if (target->msg_array && queue_msg(target, m)) {
-            eINT();
+            enableIRQ();
             return 1;
         }
 
         if (!block) {
             DEBUG("msg_send: %s: Receiver not waiting, block=%u\n", active_thread->name, block);
-            eINT();
+            enableIRQ();
             return 0;
         }
 
@@ -111,7 +111,7 @@ int msg_send(msg_t *m, unsigned int target_pid, bool block)
         sched_set_status(target,  STATUS_PENDING);
     }
 
-    eINT();
+    enableIRQ();
     thread_yield();
 
     return 1;
@@ -142,7 +142,7 @@ int msg_send_int(msg_t *m, unsigned int target_pid)
 
 int msg_send_receive(msg_t *m, msg_t *reply, unsigned int target_pid)
 {
-    dINT();
+    disableIRQ();
     tcb_t *me = (tcb_t*) sched_threads[thread_pid];
     sched_set_status(me,  STATUS_REPLY_BLOCKED);
     me->wait_data = (void*) reply;
@@ -208,7 +208,7 @@ int msg_receive(msg_t *m)
 
 static int _msg_receive(msg_t *m, int block)
 {
-    dINT();
+    disableIRQ();
     DEBUG("_msg_receive: %s: _msg_receive.\n", active_thread->name);
 
     tcb_t *me = (tcb_t*) sched_threads[thread_pid];
@@ -241,7 +241,7 @@ static int _msg_receive(msg_t *m, int block)
             DEBUG("_msg_receive(): %s: No msg in queue. Going blocked.\n", active_thread->name);
             sched_set_status(me,  STATUS_RECEIVE_BLOCKED);
 
-            eINT();
+            enableIRQ();
             thread_yield();
 
             /* sender copied message */
@@ -268,7 +268,7 @@ static int _msg_receive(msg_t *m, int block)
         sender->wait_data = NULL;
         sched_set_status(sender,  STATUS_PENDING);
 
-        eINT();
+        enableIRQ();
         return 1;
     }
 }

@@ -143,14 +143,14 @@ void hwtimer_wait(unsigned long ticks)
 static int _hwtimer_set(unsigned long offset, void (*callback)(void*), void *ptr, bool absolute)
 {
     if (!inISR()) {
-        dINT();
+        disableIRQ();
     }
 
     int n = lifo_get(lifo);
 
     if (n == -1) {
         if (!inISR()) {
-            eINT();
+            enableIRQ();
         }
 
         puts("No hwtimer left.");
@@ -170,7 +170,7 @@ static int _hwtimer_set(unsigned long offset, void (*callback)(void*), void *ptr
     lpm_prevent_sleep++;
 
     if (!inISR()) {
-        eINT();
+        enableIRQ();
     }
 
     return n;

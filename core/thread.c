@@ -19,6 +19,7 @@
 
 #include "thread.h"
 #include "kernel.h"
+#include "irq.h"
 
 #define ENABLE_DEBUG    (0)
 #include "debug.h"
@@ -62,9 +63,9 @@ void thread_sleep()
         return;
     }
 
-    dINT();
+    disableIRQ();
     sched_set_status((tcb_t *)active_thread, STATUS_SLEEPING);
-    eINT();
+    enableIRQ();
     thread_yield();
 }
 
@@ -75,7 +76,7 @@ int thread_wakeup(int pid)
 
     if (!isr) {
         DEBUG("thread_wakeup: Not in interrupt.\n");
-        dINT();
+        disableIRQ();
     }
 
     int result = sched_threads[pid]->status;
@@ -85,7 +86,7 @@ int thread_wakeup(int pid)
         sched_set_status((tcb_t *)sched_threads[pid], STATUS_RUNNING);
 
         if (!isr) {
-            eINT();
+            enableIRQ();
             thread_yield();
         }
         else {
@@ -98,7 +99,7 @@ int thread_wakeup(int pid)
         DEBUG("thread_wakeup: Thread is not sleeping!\n");
 
         if (!isr) {
-            eINT();
+            enableIRQ();
         }
 
         return STATUS_NOT_FOUND;
@@ -159,7 +160,7 @@ int thread_create(char *stack, int stacksize, char priority, int flags, void (*f
     }
 
     if (!inISR()) {
-        dINT();
+        disableIRQ();
     }
 
     int pid = 0;
@@ -178,7 +179,7 @@ int thread_create(char *stack, int stacksize, char priority, int flags, void (*f
         DEBUG("thread_create(): too many threads!\n");
 
         if (!inISR()) {
-            eINT();
+            enableIRQ();
         }
 
         return -EOVERFLOW;
@@ -218,7 +219,7 @@ int thread_create(char *stack, int stacksize, char priority, int flags, void (*f
 
         if (!(flags & CREATE_WOUT_YIELD)) {
             if (!inISR()) {
-                eINT();
+                enableIRQ();
                 thread_yield();
             }
             else {
@@ -228,7 +229,7 @@ int thread_create(char *stack, int stacksize, char priority, int flags, void (*f
     }
 
     if (!inISR() && active_thread != NULL) {
-        eINT();
+        enableIRQ();
     }
 
     return pid;

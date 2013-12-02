@@ -26,6 +26,7 @@
 #include <cpu.h>
 #include <lpm.h>
 #include <thread.h>
+#include "irq.h"
 
 #ifdef MODULE_AUTO_INIT
 #include <auto_init.h>
@@ -63,7 +64,7 @@ static char idle_stack[KERNEL_CONF_STACKSIZE_IDLE];
 
 void kernel_init(void)
 {
-    dINT();
+    disableIRQ();
     printf("kernel_init(): This is RIOT!\n");
 
     sched_init();

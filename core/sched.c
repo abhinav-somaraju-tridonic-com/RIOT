@@ -22,6 +22,7 @@
 #include <kernel_internal.h>
 #include <clist.h>
 #include <bitarithm.h>
+#include "irq.h"
 
 #if SCHEDSTATISTICS
 #include "hwtimer.h"
@@ -206,7 +207,7 @@ void sched_task_exit(void)
 {
     DEBUG("sched_task_exit(): ending task %s...\n", active_thread->name);
 
-    dINT();
+    disableIRQ();
     sched_threads[active_thread->pid] = NULL;
     num_tasks--;
 
