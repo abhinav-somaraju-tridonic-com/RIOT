@@ -2,7 +2,7 @@ export MAKEBASE =$(RIOTBASE)
 export BINDIR =$(RIOTBASE)/bin/
 UNDEF += $(BINDIR)startup.o
 
-USEMODULE += cpu core sys
+USEMODULE += cpu core sys board
 ED = $(USEMODULE:%=-DMODULE_%)
 EXTDEFINES = $(shell echo $(ED)|tr 'a-z' 'A-Z')
 BL=$(USEMODULE:%= $(BINDIR)%.a)

@@ -1,4 +1,4 @@
-DIRS = $(RIOTCPU) core drivers sys 
+DIRS = $(RIOTBOARD)/$(BOARD) $(RIOTCPU)/$(CPU) core drivers sys
 
 .PHONY: all clean doc
 
@@ -14,4 +14,3 @@ clean:
 
 doc:
 	make -BC doc/doxygen	
-

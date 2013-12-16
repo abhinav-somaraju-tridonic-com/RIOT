@@ -1,10 +1,10 @@
 # set undefined variables
 ifeq ($(strip $(RIOTCPU)),)
-	export RIOTCPU =$(RIOTBASE)/cpu
+	export RIOTCPU = $(RIOTBASE)/cpu
 endif
 	
 ifeq ($(strip $(RIOTBOARD)),)
-	export RIOTBOARD =$(RIOTBASE)/boards
+	export RIOTBOARD = $(RIOTBASE)/boards
 endif
 
 ifeq ($(strip $(MCU)),)
@@ -18,11 +18,13 @@ export CFLAGS
 
 # mandatory includes!
 include $(RIOTBOARD)/$(BOARD)/Makefile.include
-include $(RIOTCPU)/Makefile.include
-include $(RIOTBASE)/Makefile.modules 
+include $(RIOTCPU)/$(CPU)/Makefile.include
+#include $(RIOTCPU)/Makefile.include  ### taken out for now, see line above for new include style
+include $(RIOTBASE)/Makefile.modules
+
+$(info [INFO]   Building project $(PROJECT) for $(BOARD) w/ MCU $(MCU).)
 
 # your binaries to link
-BASELIBS += $(RIOTBOARD)/$(BOARD)/bin/$(BOARD)_base.a
 BASELIBS += $(PROJBINDIR)/${PROJECT}.a
 
 PROJBINDIR =$(CURDIR)/bin
@@ -48,8 +50,8 @@ endif
 
 ## make script for your project. Build RIOT-base here!
 all: $(PROJBINDIR)/$(PROJECT).a
-	@echo "Building project $(PROJECT) for $(BOARD) w/ MCU $(MCU)."
-	"$(MAKE)" -C $(RIOTBOARD)
+#	@echo "Building project $(PROJECT) for $(BOARD) w/ MCU $(MCU)."
+#	"$(MAKE)" -C $(RIOTBOARD)  ## why should the board be handled any different from cpu?
 	"$(MAKE)" -C $(RIOTBASE)
 	@for i in $(EXTERNAL_MODULES) ; do "$(MAKE)" -C $$i ; done ;
 ifeq ($(BUILDOSXNATIVE),1)	
@@ -57,11 +59,8 @@ ifeq ($(BUILDOSXNATIVE),1)
 else
 	@$(LINK) $(UNDEF) -o $(PROJBINDIR)/$(PROJECT).elf -Wl,--start-group $(BASELIBS) -lm -Wl,--end-group  -Wl,-Map=$(PROJBINDIR)/$(PROJECT).map $(LINKFLAGS) 
 	@$(SIZE) $(PROJBINDIR)/$(PROJECT).elf
-ifneq (,$(findstring stm32f4,$(CPU)))
 	@$(OBJCOPY) -O binary $(PROJBINDIR)/$(PROJECT).elf $(PROJBINDIR)/$(PROJECT).bin
-else
 	@$(OBJCOPY) -O ihex $(PROJBINDIR)/$(PROJECT).elf $(PROJBINDIR)/$(PROJECT).hex
-endif
 endif
 
 ## your make rules
@@ -82,15 +81,15 @@ $(PROJBINDIR)/$(PROJECT).a:  $(OBJ)
 -include $(OBJ:.o=.d)
 
 $(PROJBINDIR)/%.o: %.c $(PROJDEPS)
-	@echo; echo "Compiling.... $*.c"; echo
+	$(info [CC]     Compiling.... $*.c)
 	@test -d $(PROJBINDIR) || mkdir -p $(PROJBINDIR)
-	$(CC) $(CFLAGS) $(INCLUDES) -c $*.c -o $(PROJBINDIR)/$*.o
+	@$(CC) $(CFLAGS) $(INCLUDES) -c $*.c -o $(PROJBINDIR)/$*.o
 
 clean:
-	"$(MAKE)" -C $(RIOTBOARD) clean
-	"$(MAKE)" -C $(RIOTBASE) clean
+#	"$(MAKE)" -C $(RIOTBOARD) clean
+	@"$(MAKE)" -C $(RIOTBASE) clean
 	@for i in $(EXTERNAL_MODULES) ; do "$(MAKE)" -C $$i clean ; done ;
-	rm -rf $(PROJBINDIR)
+	@rm -rf $(PROJBINDIR)
 
 flash: all
 	$(FLASHER) $(FFLAGS)
@@ -109,3 +108,4 @@ buildtest:
 		echo -n "Building for $${BOARD} .. "; \
 		env -i HOME=$${HOME} PATH=$${PATH} BOARD=$${BOARD} RIOTBASE=$${RIOTBASE} RIOTBOARD=$${RIOTBOARD} RIOTCPU=$${RIOTCPU} $(MAKE) -B clean all >/dev/null 2>&1 && echo "success" || echo "failed"  ; \
 	done
+

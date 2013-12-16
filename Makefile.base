@@ -11,8 +11,8 @@ DEP = $(SRC:%.c=$(BINDIR)%.d)
 
 .PHONY: clean
 
-include $(RIOTCPU)/Makefile.base
 include $(RIOTBOARD)/Makefile.base
+include $(RIOTCPU)/Makefile.base
 
 $(BINDIR)$(MODULE).a: $(OBJ) $(ASMOBJ)
 	@$(AR) -rc $(BINDIR)$(MODULE).a $(OBJ) $(ASMOBJ)

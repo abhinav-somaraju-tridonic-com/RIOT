@@ -8,9 +8,9 @@ ifneq (,$(findstring vtimer,$(USEMODULE)))
 endif
 
 ifneq (,$(findstring uart0,$(USEMODULE)))
-	ifeq (,$(findstring lib,$(USEMODULE)))
-		USEMODULE += lib	
-	endif
+#  ifeq (,$(findstring lib,$(USEMODULE)))
+    USEMODULE += lib
+#  endif
 endif
 
 ifneq (,$(findstring cc110x,$(USEMODULE)))
