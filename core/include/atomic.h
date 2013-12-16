@@ -17,6 +17,8 @@
 #ifndef _ATOMIC_H
 #define _ATOMIC_H
 
+#include "arch/atomic_arch.h"
+
 /**
  * @brief sets "val" to "set", returns old "val", atomically
  */

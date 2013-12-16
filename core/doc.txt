@@ -1,0 +1,16 @@
+/*
+ * Copyright (C) 2013 Freie Universität Berlin
+ *
+ * This file is subject to the terms and conditions of the GNU Lesser General
+ * Public License. See the file LICENSE in the top level directory for more
+ * details.
+ */
+
+/**
+ * @defgroup    core_arch Arch
+ * @ingroup     core
+ * @brief       The Arch module holds all interfaces to architecture dependent functions.
+ *
+ * Implement this interface on your target platform (combination of board and cpu), and you
+ * have created a new port.
+ */

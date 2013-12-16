@@ -1,6 +1,7 @@
 #ifndef LPM_H_
 #define LPM_H_
 
+#include "arch/lpm_arch.h"
 /**
  * @defgroup    lpm     Power Management
  * @ingroup     kernel
@@ -18,18 +19,6 @@
  *
  * @note        $Id$
  */
-
-
-/**
- * @brief   Available power modes
- */
-enum lpm_mode {
-    LPM_ON,             ///< MCU is active
-    LPM_IDLE,           ///< MCU is idle
-    LPM_SLEEP,          ///< MCU in sleep mode
-    LPM_POWERDOWN,      ///< MCU is powered down
-    LPM_OFF             ///< MCU is off
-};
 
 /**
  * @brief   Initialization of power management (including clock setup)

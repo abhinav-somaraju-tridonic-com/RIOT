@@ -13,6 +13,7 @@
  * @author      Kaspar Schleiser <kaspar@schleiser.de>
  */
 
+#include "arch/thread_arch.h"
 #include <kernel.h>
 #include <tcb.h>
 

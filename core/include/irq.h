@@ -18,7 +18,7 @@
  *
  */
 
-#include <stdbool.h>
+#include "arch/irq_arch.h"
 
 /**
  * @brief   This function sets the IRQ disable bit in the status register

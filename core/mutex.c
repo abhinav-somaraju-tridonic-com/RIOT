@@ -24,6 +24,7 @@
 #include "kernel.h"
 #include "sched.h"
 #include "irq.h"
+#include "thread.h"
 
 #include "debug.h"
 
