@@ -1,0 +1,16 @@
+
+# define the ST standard periphial library and the specific mcu
+export STM_LIB_BASE = $(RIOTBASE)/lib/stm32f0_stdperiph_lib/
+
+# add the type of MCU used to the compiler flags 
+# (see stmlib/Libraries/CMSIS/Device/ST/STM32F30x/Include/stm32f30x.h for available types)
+export CFLAGS += -DUSE_STDPERIPH_DRIVER -DSTM32F0XX_MD
+
+# include cpu specific includes
+export INCLUDES += -I$(RIOTCPU)/$(CPU)/include
+
+# add the cpu specific system calls implementations for the linker
+export UNDEF += $(BINDIR)syscalls.o
+
+# the stm32f051r8 depends on the STM32F0 std periph library, so include this
+include $(STM_LIB_BASE)Makefile.include
