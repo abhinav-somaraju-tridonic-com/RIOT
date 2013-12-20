@@ -7,6 +7,7 @@ ifeq ($(strip $(RIOTBOARD)),)
 	export RIOTBOARD =$(RIOTBASE)/boards
 endif
 
+# Is this still needed? -> DEPRECATED: Use RIOTCPU instead
 ifeq ($(strip $(MCU)),)
 	MCU = $(CPU)
 endif
@@ -17,6 +18,9 @@ CFLAGS += -DBOARD=$(BB)
 export CFLAGS
 
 # mandatory includes!
+include $(RIOTBASE)/core/Makefile.include
+include $(RIOTBASE)/sys/Makefile.include
+include $(RIOTBASE)/drivers/Makefile.include
 include $(RIOTBOARD)/$(BOARD)/Makefile.include
 include $(RIOTCPU)/Makefile.include
 include $(RIOTBASE)/Makefile.modules 
