@@ -216,7 +216,11 @@ int _write_r(struct _reent *r, int fd, const void *data, unsigned int count)
         {
             //FIXME impl fw_puts
 
+<<<<<<< HEAD
             char* chars = data;
+=======
+            const char *chars = data;
+>>>>>>> 1cd3fc9... added stm32f3 specific files
             for(int i = 0;i < count;i++) {
                 uart_writec(chars[i]);
             }

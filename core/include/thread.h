@@ -86,5 +86,15 @@ int thread_getlastpid(void);
  */
 int thread_measure_stack_usage(char *stack);
 
+/**
+ * @brief   Force an immediate call to the scheduler.
+ *
+ * Call the scheduler immediately. If a higher priority thread is pending, a task switch is
+ * carried out. If no higher priority is pending, the current task will keep on to be executed.
+ *
+ * This function should be called on exit of each interrupt service call.
+ */
+void thread_yield(void);
+
 /* @} */
 #endif /* __THREAD_H */
