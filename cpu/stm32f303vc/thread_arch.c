@@ -22,10 +22,7 @@
 #include "arch/thread_arch.h"
 #include "sched.h"
 #include "irq.h"
-<<<<<<< HEAD
-=======
 #include "cpu.h"
->>>>>>> 1cd3fc9... added stm32f3 specific files
 #include "stm32f30x.h"
 
 static void context_save(void);
@@ -109,19 +106,6 @@ void thread_arch_stack_print(void)
     // TODO
 }
 
-void thread_arch_yield(void)
-{
-    if (irq_arch_in()) {
-        SCB->ICSR |= SCB_ICSR_PENDSVSET_Msk;    // set PendSV Bit
-    } else {
-<<<<<<< HEAD
-        asm("svc 0x01\n");
-=======
-        asm("svc 0x01\n");                      // trigger SVC interrupt, which will trigger the pendSV (needed?)
->>>>>>> 1cd3fc9... added stm32f3 specific files
-    }
-}
-
 /**
  *
  */
@@ -156,14 +140,18 @@ void enter_thread_mode(void)
     asm("pop    {pc}"               );
 }
 
+void thread_arch_yield(void)
+{
+    if (irq_arch_in()) {
+        SCB->ICSR |= SCB_ICSR_PENDSVSET_Msk;    // set PendSV Bit
+    } else {
+        asm("svc 0x01\n");                      // trigger SVC interrupt, which will trigger the pendSV (needed?)
+    }
+}
 
-<<<<<<< HEAD
-
-=======
 /**
  * @brief SVC interrupt handler (to be discussed if this is really needed)
  */
->>>>>>> 1cd3fc9... added stm32f3 specific files
 __attribute__((naked))
 void SVC_Handler(void)
 {
@@ -181,19 +169,10 @@ __attribute__((naked))
 void PendSV_Handler(void)
 {
     context_save();
-<<<<<<< HEAD
-    asm("bl     sched_run"          );      /* call scheduler to update active_thread variable with tcb of next thread  */
-                                            /* the thread that has higest priority and is in PENDING state */
-    context_restore();
-}
-
-
-=======
     sched_run();
     context_restore();
 }
 
->>>>>>> 1cd3fc9... added stm32f3 specific files
 __attribute__( ( always_inline ) ) static __INLINE
 void context_save(void)
 {
@@ -223,5 +202,3 @@ void context_restore(void)
 
     /* {r0-r3,r12,LR,PC,xPSR} are restored automatically on exception return */
 }
-
-

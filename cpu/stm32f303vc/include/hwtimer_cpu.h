@@ -2,10 +2,8 @@
 #ifndef HWTIMER_CPU_H_
 #define HWTIMER_CPU_H_
 
-#define F_CPU           (72000000U)
-
-#define ARCH_MAXTIMERS  1
-#define HWTIMER_SPEED   100000
-#define HWTIMER_MAXTICKS (0xFFFFFFFF)
+#define HWTIMER_MAXTIMERS   4               ///< the cpu implementation supports 4 HW timers
+#define HWTIMER_SPEED       1000000         ///< the HW timer runs with 1MHz
+#define HWTIMER_MAXTICKS    (0xFFFFFFFF)    ///< 32-bit timer
 
 #endif /* HWTIMER_CPU_H_ */

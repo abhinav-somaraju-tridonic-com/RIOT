@@ -23,9 +23,5 @@
 
 void cpu_init(void);
 
-<<<<<<< HEAD
-=======
-
->>>>>>> 1cd3fc9... added stm32f3 specific files
 /** @} */
 #endif /* __CPU_H */

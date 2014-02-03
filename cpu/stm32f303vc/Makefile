@@ -3,7 +3,7 @@
 MODULE = cpu
 
 # add a list of subdirectories, that should also be build
-DIRS = bsp
+DIRS = bsp periph
 
 .PHONY: all $(STM_LIB_NAME)
 

@@ -14,7 +14,7 @@ export UNDEF += $(BINDIR)syscalls.o
 
 # export the bsp to be linked into the final binary
 # TODO: this is only temporary, the cpu Makefile needs to be changed so the bsp objects are packed into cpu.a
-export USEMODULE += bsp
+export USEMODULE += bsp periph
 
 # the stm32f303vc depends on the STM32F3 std periph library, so include this
 include $(STM_LIB_BASE)Makefile.include

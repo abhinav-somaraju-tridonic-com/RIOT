@@ -21,7 +21,6 @@
 #include <stdint.h>
 #include "arch/lpm_arch.h"
 
-
 void lpm_arch_init(void)
 {
     // TODO
@@ -29,7 +28,6 @@ void lpm_arch_init(void)
 
 enum lpm_mode lpm_arch_set(enum lpm_mode target)
 {
-    // TODO
     return 0;
 }
 

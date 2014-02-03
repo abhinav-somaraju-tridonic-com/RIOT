@@ -24,7 +24,7 @@
 #include "mutex.h"
 #include "ringbuffer.h"
 
-#include "periphial_conf.h"
+#include "periph_conf.h"
 #include "stm32f30x_gpio.h"
 #include "stm32f30x_usart.h"
 

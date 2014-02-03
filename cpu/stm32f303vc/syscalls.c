@@ -16,6 +16,7 @@
  * @author      Freie Universität Berlin, Computer Systems & Telematics, FeuerWhere project
  * @author      Michael Baar <michael.baar@fu-berlin.de>
  * @author      Stefan Pfeiffer <pfeiffer@inf.fu-berlin.de>
+ * @author      Hauke Petersen <hauke.petersen@fu-berlin.de>
  *
  * @}
  */
@@ -38,6 +39,12 @@
 #define PRINTF(...)             printf(__VA_ARGS__)
 #else
 #define PRINTF(...)
+#endif
+
+#ifdef CONFIG_STDIO
+#include "periph/chardev.h"
+
+extern chardev_t stdio_t;
 #endif
 
 #ifdef MODULE_FAT
@@ -77,6 +84,7 @@ void heap_stats(void) {
         printf("# heap %i: %p -- %p -> %p (%li of %li free)\n", i, heap_start[i], heap[i], heap_max[i],
             (uint32_t)heap_max[i] - (uint32_t)heap[i], (uint32_t)heap_max[i] - (uint32_t)heap_start[i]);
 }
+
 /*-----------------------------------------------------------------------------------*/
 void __assert_func(const char *file, int line, const char *func, const char *failedexpr)
 {
@@ -87,11 +95,13 @@ void __assert_func(const char *file, int line, const char *func, const char *fai
     printf("#! assertion %s failed\n\t%s() in %s:%u\n", failedexpr, func, file, line );
     _exit(3);
 }
+
 /*-----------------------------------------------------------------------------------*/
 void __assert(const char *file, int line, const char *failedexpr)
 {
     __assert_func(file, line, "?", failedexpr);
 }
+
 /*-----------------------------------------------------------------------------------*/
 caddr_t _sbrk_r(struct _reent *r, size_t incr)
 {
@@ -131,6 +141,7 @@ caddr_t _sbrk_r(struct _reent *r, size_t incr)
     r->_errno = ENOMEM;
     return NULL;
 }
+
 /*---------------------------------------------------------------------------*/
 int _isatty_r(struct _reent *r, int fd)
 {
@@ -140,6 +151,7 @@ int _isatty_r(struct _reent *r, int fd)
     else
         return 0;
 }
+
 /*---------------------------------------------------------------------------*/
 _off_t _lseek_r(struct _reent *r, int fd, _off_t pos, int whence)
 {
@@ -154,6 +166,7 @@ _off_t _lseek_r(struct _reent *r, int fd, _off_t pos, int whence)
     PRINTF("lseek returned %li (0 is success)\n", result);
     return result;
 }
+
 /*---------------------------------------------------------------------------*/
 int _open_r(struct _reent *r, const char *name, int mode)
 {
@@ -168,6 +181,7 @@ int _open_r(struct _reent *r, const char *name, int mode)
     PRINTF("open [%i] errno %i\n", ret, r->_errno);
     return ret;
 }
+
 /*---------------------------------------------------------------------------*/
 int _stat_r(struct _reent *r, char *name, struct stat *st)
 {
@@ -180,6 +194,7 @@ int _stat_r(struct _reent *r, char *name, struct stat *st)
     PRINTF("_stat_r [%i] errno %i\n", ret, r->_errno);
     return ret;
 }
+
 /*---------------------------------------------------------------------------*/
 int _fstat_r(struct _reent *r, int fd, struct stat * st)
 {
@@ -204,6 +219,7 @@ int _fstat_r(struct _reent *r, int fd, struct stat * st)
     }
     return ret;
 }
+
 /*---------------------------------------------------------------------------*/
 int _write_r(struct _reent *r, int fd, const void *data, unsigned int count)
 {
@@ -213,60 +229,37 @@ int _write_r(struct _reent *r, int fd, const void *data, unsigned int count)
     switch(fd) {
         case STDOUT_FILENO:
         case STDERR_FILENO:
-        {
-            //FIXME impl fw_puts
-
-<<<<<<< HEAD
-            char* chars = data;
-=======
-            const char *chars = data;
->>>>>>> 1cd3fc9... added stm32f3 specific files
-            for(int i = 0;i < count;i++) {
-                uart_writec(chars[i]);
-            }
-
-            return count;
+#ifdef CONFIG_STDIO
+            result = chardev_write(&stdio_dev, data, count);
+#endif
             //result = fw_puts((char*)data, count);
-        }
             break;
-
         default:
-            #ifdef MODULE_FAT
-                result = ff_write_r(r, fd, data, count);
-            #endif
             break;
     }
-
     return result;
 }
+
 /*---------------------------------------------------------------------------*/
 int _read_r(struct _reent *r, int fd, void *buffer, unsigned int count)
 {
-    int result = -1;
+    int result = EOF;
     r->_errno = EBADF;
-
 
     switch(fd) {
         case STDIN_FILENO:
-            {
-                char* chars = buffer;
-                for(int i = 0;i < count;i++) {
-                    chars[i] = uart_readc();
-                }
-            }break;
+#ifdef CONFIG_STDIO
+            result = chardev_read(&stdio_dev, buffer, count);
+#endif
+            break;
         case STDERR_FILENO:
-            {
-            }
             break;
         default:
-            #ifdef MODULE_FAT
-                    result = ff_read_r(r, fd, buffer, count);
-            #endif
             break;
-        }
-
+    }
     return result;
 }
+
 /*---------------------------------------------------------------------------*/
 int _close_r(struct _reent *r, int fd)
 {
@@ -277,6 +270,7 @@ int _close_r(struct _reent *r, int fd)
     #endif
     return ret;
 }
+
 /*---------------------------------------------------------------------------*/
 int _unlink_r(struct _reent *r, char* path)
 {
@@ -287,6 +281,7 @@ int _unlink_r(struct _reent *r, char* path)
 #endif
     return ret;
 }
+
 /*---------------------------------------------------------------------------*/
 void _exit(int n)
 {
@@ -299,11 +294,13 @@ void _exit(int n)
     NVIC_SystemReset();
     while(1);
 }
+
 /*---------------------------------------------------------------------------*/
 int _getpid(void)
 {
     return active_thread->pid;
 }
+
 /*---------------------------------------------------------------------------*/
 int _kill_r(struct _reent *r, int pid, int sig)
 {
@@ -311,11 +308,13 @@ int _kill_r(struct _reent *r, int pid, int sig)
     r->_errno = ESRCH;      // no such process
     return -1;
 }
+
 /*---------------------------------------------------------------------------*/
 void __no_operation(void)
 {
     asm("nop");
 }
+
 /*---------------------------------------------------------------------------*/
 void _init(void){}
 void _fini(void){}
