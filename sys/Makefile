@@ -22,6 +22,9 @@ endif
 ifneq (,$(findstring ps,$(USEMODULE)))
     DIRS += ps
 endif
+ifneq (,$(findstring led,$(USEMODULE)))
+    DIRS += led
+endif
 ifneq (,$(findstring sync_read,$(USEMODULE)))
     DIRS += sync_read
 endif

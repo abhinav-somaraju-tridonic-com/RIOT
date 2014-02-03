@@ -17,6 +17,9 @@ BB = $(shell echo $(BOARD)|tr 'a-z' 'A-Z')
 CFLAGS += -DBOARD=$(BB)
 export CFLAGS
 
+# parse configuration options
+export CFLAGS += $(shell echo $(CONFIG:%=-DCONFIG_%)|tr 'a-z' 'A-Z') 
+
 # mandatory includes!
 include $(RIOTBASE)/core/Makefile.include
 include $(RIOTBASE)/sys/Makefile.include
