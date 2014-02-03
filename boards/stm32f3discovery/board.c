@@ -20,59 +20,55 @@
 
 #include <stdint.h>
 #include <stdio.h>
+
 #include "stm32f30x_gpio.h"
 #include "stm32f30x_rcc.h"
+
 #include "board.h"
 #include "cpu.h"
+#include "irq.h"
+#include "hwtimer.h"
+#include "led.h"
 #include "bsp/uart.h"
 
+#ifdef CONFIG_STDIO
+#include "periph/uart.h"
+#include "periph/chardev.h"
 
-#define LED_CLK_INIT()   RCC_AHBPeriphClockCmd(RCC_AHBPeriph_GPIOE, ENABLE)
+#define STDIO_BUFSIZE     (128U)
+
+
+char stdio_rxbuf[STDIO_BUFSIZE];
+char stdio_txbuf[STDIO_BUFSIZE];
+chardev_t stdio_dev;
+#endif
+
+
+
+void system_init(void);
 
 void board_init(void)
 {
     system_init();
-    uart_init();
-    puts("\n");
-    puts("Clock setup...  done");
-    puts("Uart setup...   done");
+    // uart_init();
+    // puts("\n");
+    // puts("Clock setup...  done");
+    // puts("Uart setup...   done");
     cpu_init();
-    puts("CPU init...     done");
-    board_leds_init();
-    puts("Initialized the STM32F3Discovery");
-}
 
+    // puts("CPU init...     done");
+    // puts("Initialized the STM32F3Discovery");
+    hwtimer_init();
 
-void board_leds_init()
-{
-    LED_CLK_INIT();
-    GPIO_InitTypeDef gpio_init;
-    gpio_init.GPIO_Pin = GPIO_Pin_8 | GPIO_Pin_9 | GPIO_Pin_10 | GPIO_Pin_11 |
-            GPIO_Pin_12 | GPIO_Pin_13 | GPIO_Pin_14 | GPIO_Pin_15;
-    gpio_init.GPIO_Mode = GPIO_Mode_OUT;
-    gpio_init.GPIO_OType = GPIO_OType_PP;
-    gpio_init.GPIO_PuPd = GPIO_PuPd_NOPULL;
-    gpio_init.GPIO_Speed = GPIO_Speed_50MHz;
-    GPIO_Init(GPIOE, &gpio_init);
-}
+#ifdef CONFIG_STDIO
+    uart_init(STD_IO, STD_IO_BAUDRATE, NULL, NULL);
+    uart_get_chardev(STD_IO, &stdio_dev);
+    chardev_init(&stio_dev, stdio_rxbuf, STDIO_BUFSIZE, stdio_txbuf, STDIO_BUFSIZE);
+#endif
 
-void board_led_on(board_leds_t led)
-{
-    GPIO_SetBits(GPIOE, led);
-}
-
-void board_led_off(board_leds_t led)
-{
-    GPIO_ResetBits(GPIOE, led);
-}
-
-void board_led_toggle(board_leds_t led)
-{
-    if (GPIO_ReadOutputDataBit(GPIOE, led) == RESET) {
-        board_led_on(led);
-    } else {
-        board_led_off(led);
-    }
+    // initialize the boards leds
+    gpio_t pins[] = {LED_3, LED_4, LED_5, LED_6, LED_7, LED_8, LED_9, LED_10};
+    led_init(pins, 8);
 }
 
 

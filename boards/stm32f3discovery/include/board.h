@@ -21,36 +21,56 @@
 #ifndef __BOARD_H
 #define __BOARD_H
 
-#define F_CPU           (72000000U)
-
-#define HSE_VALUE    ((uint32_t)8000000)
-#define RTC_CLOCK_SOURCE_LSI
+#include "periph/gpio.h"
 
 /**
- * @brief Definitions of available LEDs
+ * Define the nominal CPU core clock in this board
  */
-typedef enum {
-    LED3 = 0x0200,       ///< LED 3
-    LED4 = 0x0100,       ///< LED 4
-    LED5 = 0x0400,       ///< LED 5
-    LED6 = 0x8000,       ///< LED 6
-    LED7 = 0x0800,       ///< LED 7
-    LED8 = 0x4000,       ///< LED 8
-    LED9 = 0x1000,       ///< LED 9
-    LED10 = 0x2000       ///< LED 10
-} board_leds_t;
+#define F_CPU               (72000000U)
+
+
+/**
+ * Assign the hardware timer
+ */
+#define ARCH_MAXTIMERS      (4U)
+#define HW_TIMER            TIMER_0
+
+/**
+ * Configure connected devices
+ */
+#define STD_IO              UART_0
+#define STD_IO_BAUDRATE     115200
+
+/**
+ * Configure NRF24L01+ devices
+ */
+#define NRF24L01P_NUMOF     (1U)
+#define NRF24L01P_SPI       SPI_0
+#define NRF24L01P_CE        GPIO_0
+#define NRF24L01P_CSN       GPIO_1
+#define NRF24L01P_INT       GPIO_2
+
+/**
+ * Assign LEDs
+ */
+#define LED_ON              (1U)
+#define LED_OFF             (0U)
+#define LED_3               GPIO_8
+#define LED_4               GPIO_9
+#define LED_5               GPIO_10
+#define LED_6               GPIO_11
+#define LED_7               GPIO_12
+#define LED_8               GPIO_13
+#define LED_9               GPIO_14
+#define LED_10              GPIO_15
+// for compatability to other boards
+#define RED_LED             LED_3
+#define GREEN_LED           LED_10
+
 
 
 
 void board_init(void);
-
-void sysclock_core_update(void);
-void system_init(void);
-
-void board_leds_init(void);
-void board_led_on(board_leds_t led);
-void board_led_off(board_leds_t led);
-void board_led_toggle(board_leds_t led);
 
 
 /** @} */
