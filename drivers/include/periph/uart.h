@@ -7,11 +7,11 @@
 
 /**
  * @ingroup     driver_periph
- * @brief       Low-level UART periphial driver
+ * @brief       Low-level UART peripheral driver
  * @{
  *
  * @file        uart.h
- * @brief       Low-level UART periphial driver interface definitions
+ * @brief       Low-level UART peripheral driver interface definitions
  *
  * @author      Hauke Petersen <hauke.petersen@fu-berlin.de>
  */
@@ -47,20 +47,20 @@ typedef enum {
  * - 8 data bits
  * - no parity
  * - 1 stop bit
- * - baudrate as given
+ * - baud-rate as given
  * 
  * @param uart          the UART device to initialize
- * @param baudrate      the desired baudrate in baud/s
+ * @param baudrate      the desired baud-rate in baud/s
  * @param rx_cb         receive callback is called for every byte the is receive in interrupt context
  * @param tx_db         transmit callback is called when done with sending a byte (tx buffer gets empty)
- * @return              the actually set baudrate, -1 on error
+ * @return              the actually set baud-rate, -1 on error
  */
 int uart_init(uart_t uart, int baudrate, void (*rx_cb)(char), void (*tx_cb)(void));
 
 /**
- * @brief Begin a new transmittion, on most platforms this function will enable the tx interrupt
+ * @brief Begin a new transmission, on most platforms this function will enable the tx interrupt
  * 
- * @param uart          UART device that will start a transmittion
+ * @param uart          UART device that will start a transmission
  */
 void uart_tx_begin(uart_t uart);
 
@@ -78,7 +78,7 @@ void uart_tx_end(uart_t uart);
  * the old byte. This method should be used in the transmit callback routine as in this it
  * is made sure that no old byte is waiting to be transferred.
  * 
- * @param uart          the UART device to use for transmittion
+ * @param uart          the UART device to use for transmission
  * @param data          the byte to write
  * @return              1 on success, -1 on error
  */
