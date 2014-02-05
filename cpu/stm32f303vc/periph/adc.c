@@ -27,7 +27,7 @@
 
 
 
-int adc_init(adc_t dev, int precision, void (*callback)(int))
+int adc_init(adc_t dev, int precision)
 {
     // GPIO_InitTypeDef GPIO_InitStructure;
     // ADC_InitTypeDef ADC_InitStructure;

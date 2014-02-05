@@ -51,39 +51,39 @@ extern chardev_t stdio_t;
 #include "ff_ansi.h"
 #endif
 
-/**
- * @name Heaps (defined in linker script)
- * @{
- */
-#define NUM_HEAPS   1//2
+// /**
+//  * @name Heaps (defined in linker script)
+//  * @{
+//  */
+// #define NUM_HEAPS   1//2
 
-extern uintptr_t __heap1_start;     ///< start of heap memory space
-extern uintptr_t __heap1_max;       ///< maximum for end of heap memory space
-/*
-extern uintptr_t __heap2_start;     ///< start of heap memory space
-extern uintptr_t __heap2_max;       ///< maximum for end of heap memory space
-extern uintptr_t __heap3_start;     ///< start of heap memory space
-extern uintptr_t __heap3_max;       ///< maximum for end of heap memory space
-*/
+// extern uintptr_t __heap1_start;     ///< start of heap memory space
+// extern uintptr_t __heap1_max;       ///< maximum for end of heap memory space
+// /*
+// extern uintptr_t __heap2_start;     ///< start of heap memory space
+// extern uintptr_t __heap2_max;       ///< maximum for end of heap memory space
+// extern uintptr_t __heap3_start;     ///< start of heap memory space
+// extern uintptr_t __heap3_max;       ///< maximum for end of heap memory space
+// */
 
 
-/// current position in heap
-static caddr_t heap[NUM_HEAPS] = {(caddr_t)&__heap1_start};//,(caddr_t)&__heap3_start,(caddr_t)&__heap2_start}; // add heap3 before heap2 cause Heap3 address is lower then addr of heap2
-/// maximum position in heap
-static const caddr_t heap_max[NUM_HEAPS] = {(caddr_t)&__heap1_max};//,(caddr_t)&__heap3_max,(caddr_t)&__heap2_max};
-// start position in heap
-static const caddr_t heap_start[NUM_HEAPS] = {(caddr_t)&__heap1_start};//,(caddr_t)&__heap3_start,(caddr_t)&__heap2_start};
-// current heap in use
-volatile static uint8_t iUsedHeap = 0;
+// /// current position in heap
+// static caddr_t heap[NUM_HEAPS] = {(caddr_t)&__heap1_start};//,(caddr_t)&__heap3_start,(caddr_t)&__heap2_start}; // add heap3 before heap2 cause Heap3 address is lower then addr of heap2
+// /// maximum position in heap
+// static const caddr_t heap_max[NUM_HEAPS] = {(caddr_t)&__heap1_max};//,(caddr_t)&__heap3_max,(caddr_t)&__heap2_max};
+// // start position in heap
+// static const caddr_t heap_start[NUM_HEAPS] = {(caddr_t)&__heap1_start};//,(caddr_t)&__heap3_start,(caddr_t)&__heap2_start};
+// // current heap in use
+// volatile static uint8_t iUsedHeap = 0;
 
 /** @} */
 
-/*-----------------------------------------------------------------------------------*/
-void heap_stats(void) {
-    for(int i = 0; i < NUM_HEAPS; i++)
-        printf("# heap %i: %p -- %p -> %p (%li of %li free)\n", i, heap_start[i], heap[i], heap_max[i],
-            (uint32_t)heap_max[i] - (uint32_t)heap[i], (uint32_t)heap_max[i] - (uint32_t)heap_start[i]);
-}
+// /*-----------------------------------------------------------------------------------*/
+// void heap_stats(void) {
+//     for(int i = 0; i < NUM_HEAPS; i++)
+//         printf("# heap %i: %p -- %p -> %p (%li of %li free)\n", i, heap_start[i], heap[i], heap_max[i],
+//             (uint32_t)heap_max[i] - (uint32_t)heap[i], (uint32_t)heap_max[i] - (uint32_t)heap_start[i]);
+// }
 
 /*-----------------------------------------------------------------------------------*/
 void __assert_func(const char *file, int line, const char *func, const char *failedexpr)
@@ -105,40 +105,40 @@ void __assert(const char *file, int line, const char *failedexpr)
 /*-----------------------------------------------------------------------------------*/
 caddr_t _sbrk_r(struct _reent *r, size_t incr)
 {
-    if(incr < 0)
-    {
-        puts("[syscalls] Negative Values for _sbrk_r are not supported");
-        r->_errno = ENOMEM;
-        return NULL;
-    }
+    // if(incr < 0)
+    // {
+    //     puts("[syscalls] Negative Values for _sbrk_r are not supported");
+    //     r->_errno = ENOMEM;
+    //     return NULL;
+    // }
 
-    uint32_t cpsr = disableIRQ();
+    // uint32_t cpsr = disableIRQ();
 
-    /* check all heaps for a chunk of the requested size */
-    for( ; iUsedHeap < NUM_HEAPS; iUsedHeap++ ) {
-        caddr_t new_heap = heap[iUsedHeap] + incr;
+    // /* check all heaps for a chunk of the requested size */
+    // for( ; iUsedHeap < NUM_HEAPS; iUsedHeap++ ) {
+    //     caddr_t new_heap = heap[iUsedHeap] + incr;
 
-        #ifdef MODULE_TRACELOG
-        trace_pointer(TRACELOG_EV_MEMORY, heap[iUsedHeap]);
-        #endif
-        if( new_heap <= heap_max[iUsedHeap] ) {
-            caddr_t prev_heap = heap[iUsedHeap];
-            #ifdef MODULE_TRACELOG
-            trace_pointer(TRACELOG_EV_MEMORY, new_heap);
-            #endif
-            heap[iUsedHeap] = new_heap;
+    //     #ifdef MODULE_TRACELOG
+    //     trace_pointer(TRACELOG_EV_MEMORY, heap[iUsedHeap]);
+    //     #endif
+    //     if( new_heap <= heap_max[iUsedHeap] ) {
+    //         caddr_t prev_heap = heap[iUsedHeap];
+    //         #ifdef MODULE_TRACELOG
+    //         trace_pointer(TRACELOG_EV_MEMORY, new_heap);
+    //         #endif
+    //         heap[iUsedHeap] = new_heap;
 
-            r->_errno = 0;
-            restoreIRQ(cpsr);
-            return prev_heap;
-        }
-    }
-    restoreIRQ(cpsr);
-    #ifdef MODULE_TRACELOG
-    trace_string(TRACELOG_EV_MEMORY, "heap!");                                  // heap full
-    #endif
+    //         r->_errno = 0;
+    //         restoreIRQ(cpsr);
+    //         return prev_heap;
+    //     }
+    // }
+    // restoreIRQ(cpsr);
+    // #ifdef MODULE_TRACELOG
+    // trace_string(TRACELOG_EV_MEMORY, "heap!");                                  // heap full
+    // #endif
 
-    r->_errno = ENOMEM;
+    // r->_errno = ENOMEM;
     return NULL;
 }
 
