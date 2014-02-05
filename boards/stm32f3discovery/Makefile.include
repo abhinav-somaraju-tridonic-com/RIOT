@@ -19,7 +19,7 @@ export CFLAGS = -ggdb -g3 -std=gnu99 -Os -Wall -Wstrict-prototypes -mcpu=cortex-
 #export CFLAGS += -flto ffunction-sections -fdata-sections -fno-builtin  # addiontal compiler flags to optimize compiling for newlib-nano
 export ASFLAGS = -ggdb -g3 -mcpu=cortex-m4 $(FPU_USAGE) -mlittle-endian
 export FFLAGS = write bin/$(PROJECT).bin 0x8000000
-export LINKFLAGS = -g3 -ggdb -std=gnu99 -mcpu=cortex-m4 $(FPU_USAGE) -mlittle-endian -static -lgcc -mthumb -mthumb-interwork -nostartfiles -T$(RIOTBASE)/cpu/$(CPU)/$(CPU)_linkerscript.ld
+export LINKFLAGS = -g3 -ggdb -std=gnu99 -mcpu=cortex-m4 $(FPU_USAGE) -mlittle-endian -static -lgcc -mthumb -mthumb-interwork -nostartfiles
 export LINKFLAGS += -specs=nano.specs -lc -lnosys                       # additional linker flags to enable newlib-nano
 
 

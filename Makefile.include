@@ -64,7 +64,7 @@ all: $(PROJBINDIR)/$(PROJECT).a
 ifeq ($(BUILDOSXNATIVE),1)	
 	@$(LINK) $(UNDEF) -o $(PROJBINDIR)/$(PROJECT).elf $(BASELIBS) $(LINKFLAGS) -Wl,-no_pie
 else
-	@$(LINK) $(UNDEF) -o $(PROJBINDIR)/$(PROJECT).elf -Wl,--start-group $(BASELIBS) -lm -Wl,--end-group  -Wl,-Map=$(PROJBINDIR)/$(PROJECT).map $(LINKFLAGS) 
+	@$(LINK) $(UNDEF) -o $(PROJBINDIR)/$(PROJECT).elf -Wl,--start-group $(BASELIBS) -lm -Wl,--end-group  -Wl,-Map=$(PROJBINDIR)/$(PROJECT).map $(LINKFLAGS) -T$(LINKERSCRIPT)
 	@$(SIZE) $(PROJBINDIR)/$(PROJECT).elf
 	@$(OBJCOPY) -O binary $(PROJBINDIR)/$(PROJECT).elf $(PROJBINDIR)/$(PROJECT).bin
 	@$(OBJCOPY) -O ihex $(PROJBINDIR)/$(PROJECT).elf $(PROJBINDIR)/$(PROJECT).hex
