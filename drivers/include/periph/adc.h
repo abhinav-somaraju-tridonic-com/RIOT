@@ -28,7 +28,7 @@
  * Each ADC device is base on a hardware ADC converter which can have one or more
  * multi-plexed channels.
  */
-#ifdef ACD_NUMOF
+#ifdef ADC_NUMOF
 typedef enum {
 #ifdef ADC_0_EN
     ADC_0,              ///< ADC device 0
