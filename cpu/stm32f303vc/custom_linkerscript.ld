@@ -3,6 +3,10 @@
  */
 
 
+
+/* define the entry point for the controller (calling the start-up code) */
+ENTRY (reset_handler)
+
 /*
  * Memory sections for the STM32F303VC:
  * - 256K flash
@@ -18,23 +22,18 @@ MEMORY
 
 SECTIONS
 {
-    /* put the isr-vector up front */
-    .isr_vector :
-    {
-        . = ALIGN(4);
-        KEEP(*(.isr_vector))
-        . = ALIGN(4);
-    } > flash
-    
     /* definition of the text section */
     .text :
     {
+        KEEP(*(.text.isr_vector))
         . = ALIGN(4);
-        KEEP(*(.isr_vector))
         *(.text)
         *(.text*)
         *(.rodata)
         *(.rodata*)
+        *(.glue_7)              /* ARM thumb helper code */
+        *(.glue_7t)             /* ARM 32 helper code */
+        *(.eh_frame)            /* gcc exception stack unwind information */
         . = ALIGN(4);
         _data_flash = .;
     } > flash
@@ -53,26 +52,17 @@ SECTIONS
     /* definition of the bss section */
     .bss :
     {
+        . = ALIGN(4);
         _bss_begin = .;
-        __bss_start__ = _bss_begin;
         *(.bss)
         *(.bss*)
         *(COMMON)
         . = ALIGN(4);
         _bss_end = .;
-        __bss_end__ = _bss_end;
     } > ram
 
     /* definition of the stack memory */
-    _stack_size = 10024;                             /* TODO: stack should take all of the remaining memory!!! */
-    _stack_end = ORIGIN(ram) + LENGTH(ram);
-    _stack_begin = _stack_end - _stack_size;
-    . = _stack_begin;
-    ._stack :
-    {
-        . = . + _stack_size;
-    } > ram
-}
 
-/* define the entry point for the controller (calling the start-up code) */
-ENTRY (reset_handler)
+    _stack_end = ORIGIN(ram) + LENGTH(ram);
+
+}

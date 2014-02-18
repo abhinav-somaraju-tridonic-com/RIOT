@@ -60,8 +60,3 @@ void usage_fault_handler(void)
 {
     while (1) {asm ("nop");}
 }
-
-void default_handler(void)
-{
-    while (1) {asm ("nop");}
-}

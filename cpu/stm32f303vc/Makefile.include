@@ -8,6 +8,7 @@ export CFLAGS += -DUSE_STDPERIPH_DRIVER -DSTM32F30X
 
 # define the linker script to use for this cpu
 export LINKERSCRIPT = $(RIOTCPU)/$(CPU)/custom_linkerscript.ld
+#export LINKERSCRIPT = $(RIOTCPU)/$(CPU)/stm32f303vc_linkerscript.ld
 
 # include cpu specific includes
 export INCLUDES += -I$(RIOTCPU)/$(CPU)/include

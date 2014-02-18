@@ -153,7 +153,7 @@ void thread_arch_yield(void)
  * @brief SVC interrupt handler (to be discussed if this is really needed)
  */
 __attribute__((naked))
-void SVC_Handler(void)
+void svc_isr(void)
 {
     /* {r0-r3,r12,LR,PC,xPSR} are saved automatically on exception entry */
 //    asm("push   {LR}");
@@ -166,7 +166,7 @@ void SVC_Handler(void)
 }
 
 __attribute__((naked))
-void PendSV_Handler(void)
+void pendsv_isr(void)
 {
     context_save();
     sched_run();

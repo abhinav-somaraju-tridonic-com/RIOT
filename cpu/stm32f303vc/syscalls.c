@@ -225,18 +225,7 @@ int _write_r(struct _reent *r, int fd, const void *data, unsigned int count)
 {
     int result = EOF;
     r->_errno = EBADF;
-
-    switch(fd) {
-        case STDOUT_FILENO:
-        case STDERR_FILENO:
-#ifdef CONFIG_STDIO
-            result = chardev_write(&stdio_dev, data, count);
-#endif
-            //result = fw_puts((char*)data, count);
-            break;
-        default:
-            break;
-    }
+    
     return result;
 }
 
