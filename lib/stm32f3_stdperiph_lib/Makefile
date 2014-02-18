@@ -45,4 +45,4 @@ $(STM_LIB_BASE)lib:
 	touch -c $@
 
 clean:
-	@rm -r -f $(STM_LIB_BASE)/bin
+	#@rm -r -f $(STM_LIB_BASE)/bin
