@@ -4,11 +4,16 @@ STM_LIB_URL = http://www.st.com/st-web-ui/static/active/en/st_prod_software_inte
 STM_LIB_ZIPFOLDER = STM32F3*
 STM_LIB_TEMP = /tmp/STMF3_tmp/
 
+# special handling of sysinit code
+SYSINIT_FILE = system_stm32f30x
+SYSINIT_PATH = $(STM_LIB_BASE)lib/Libraries/CMSIS/Device/ST/STM32F30x/Source/Templates/
+
 # collect objects that will be build
-LIB_BINDIR = $(STM_LIB_BASE)/bin/
+LIB_BINDIR = $(STM_LIB_BASE)bin/
 SRC = $(wildcard $(STM_LIB_SRCDIR)*.c)
 SRCCLEAN = $(notdir $(SRC))
 OBJ = $(SRCCLEAN:%.c=$(LIB_BINDIR)%.o)
+OBJ += $(LIB_BINDIR)$(SYSINIT_FILE).o
 
 # define the module constant (but this should not be needed)
 MODULE = $(STM_LIB_NAME)
@@ -19,16 +24,15 @@ all: $(BINDIR)$(STM_LIB_NAME).a $(STM_LIB_BASE)lib
 
 $(BINDIR)$(STM_LIB_NAME).a: $(OBJ)
 	@$(AR) -rc $(BINDIR)$(STM_LIB_NAME).a $(OBJ)
-
-# pull in dependency info for *existing* .o files
--include $(OBJ:.o=.d)
+	
+$(LIB_BINDIR)$(SYSINIT_FILE).o: $(SYSINIT_PATH)$(SYSINIT_FILE).c
+	$(info    [CC]   $(SYSINIT_PATH)$(SYSINIT_FILE).c)
+	@$(CC) $(CFLAGS) $(INCLUDES) -c $(SYSINIT_PATH)$(SYSINIT_FILE).c -o $(LIB_BINDIR)$(SYSINIT_FILE).o	
 
 $(LIB_BINDIR)%.o: $(STM_LIB_SRCDIR)%.c
 	@mkdir -p $(LIB_BINDIR)
 	$(info    [CC]   $(STM_LIB_SRCDIR)$*.c)
 	@$(CC) $(CFLAGS) $(INCLUDES) -c $(STM_LIB_SRCDIR)$*.c -o $(LIB_BINDIR)$*.o
-	@$(CC) $(CFLAGS) $(INCLUDES) -MM $(STM_LIB_SRCDIR)$*.c > $(LIB_BINDIR)$*.d
-	@printf "$(LIB_BINDIR)"|cat - $(LIB_BINDIR)$*.d > /tmp/riot_out && mv /tmp/riot_out $(LIB_BINDIR)$*.d
 
 # see if the library is already present, otherwise download it
 $(STM_LIB_BASE)lib:
@@ -45,4 +49,4 @@ $(STM_LIB_BASE)lib:
 	touch -c $@
 
 clean:
-	#@rm -r -f $(STM_LIB_BASE)/bin
+	@rm -r -f $(STM_LIB_BASE)/bin
