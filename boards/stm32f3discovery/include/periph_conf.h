@@ -1,3 +1,20 @@
+/*
+ * Copyright (C) 2013 Freie Universität Berlin
+ *
+ * This file is subject to the terms and conditions of the GNU Lesser General
+ * Public License. See the file LICENSE in the top level directory for more
+ * details.
+ */
+
+/**
+ * @ingroup     board_stm32f3discovery
+ * @{
+ *
+ * @file        periph_conf.h
+ * @brief       Peripheral MCU configuration for the STM32F3discovery board
+ *
+ * @author      Hauke Petersen <hauke.petersen@fu-berlin.de>
+ */
 
 #ifndef __PERIPH_CONF_H
 #define __PERIPH_CONF_H
@@ -9,6 +26,7 @@
 #define TIMER_NUMOF         (2U)
 #define TIMER_0_EN          1
 #define TIMER_1_EN          1
+// #define TIMER_2_EN          0
 
 // Timer 0 configuration
 #define TIMER_0_DEV         TIM2
@@ -16,29 +34,41 @@
 #define TIMER_0_PRESCALER   (71U)
 #define TIMER_0_MAX_VALUE   (0xffffffff)
 #define TIMER_0_CLKEN()     RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM2, ENABLE)
-#define TIMER_0_ISR         TIM2_IRQHandler
+#define TIMER_0_ISR         isr_tim2
 #define TIMER_0_IRQCHAN     TIM2_IRQn
 #define TIMER_0_IRQ_PRIO    1
 
 // Timer 1 configuration
-#define TIMER_1_DEV         TIM15                                                        // TODO !!!!!!!
-#define TIMER_1_CHANNELS    2
+#define TIMER_1_DEV         TIM6
+#define TIMER_1_CHANNELS    1
 #define TIMER_1_PRESCALER   (71U)
 #define TIMER_1_MAX_VALUE   (0xffff)
-#define TIMER_1_CLKEN()     RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM3, ENABLE)
-#define TIMER_1_ISR         TIM3_IRQHandler
+#define TIMER_1_CLKEN()     RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM6, ENABLE)
+#define TIMER_1_ISR         isr_tim6_dac
 #define TIMER_1_IRQCHAN     TIM3_IRQn
 #define TIMER_1_IRQ_PRIO    1
+
+// Timer 2 configuration
+#define TIMER_2_DEV         TIM7
+#define TIMER_2_CHANNELS    1
+#define TIMER_2_PRESCALER   (71U)
+#define TIMER_2_MAX_VALUE   (0xffff)
+#define TIMER_2_CLKEN()     RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM7, ENABLE)
+#define TIMER_2_ISR         isr_tim7
+#define TIMER_2_IRQCHAN     TIM3_IRQn
+#define TIMER_2_IRQ_PRIO    1
+
+
 
 /**
  * @brief ADC configuration
  */
-#define ADC_NUMOF           (2U)
-#define ADC_0_EN            1
-#define ADC_1_EN            1
+#define ADC_NUMOF           (0U)
+#define ADC_0_EN            0
+#define ADC_1_EN            0
 
 // ADC 0 configuration
-#define ADC_0_DEV           ADC1
+#define ADC_0_DEV           ADC1                                                        // TODO !!!!!!!
 #define ADC_0_SAMPLE_TIMER  
 // ADC 0 channel 0 pin config
 #define ADC_0_C0_PORT       
@@ -62,7 +92,7 @@
 #define ADC_0_C3_AFCFG()    
 
 // ADC 0 configuration
-#define ADC_1_DEV           ADC2
+#define ADC_1_DEV           ADC2                                                        // TODO !!!!!!!
 #define ADC_1_SAMPLE_TIMER  
 // ADC 0 channel 0 pin config
 #define ADC_1_C0_PORT       
@@ -89,78 +119,150 @@
 /**
  * @brief PWM configuration
  */
-#define PWM_NUMOF           (2U)
-#define PWM_0_EN            1
-#define PWM_1_EN            1
+#define PWM_NUMOF           (0U)                                                        // TODO !!!!!!!
+#define PWM_0_EN            0
+#define PWM_1_EN            0
 
-// PWM 0 device config
+/* PWM 0 device configuration */
 #define PWM_0_DEV           TIM3
-// PWM 0 pin config
-#define PWM_1_PORT          
-#define PWM_2_PORT          
+#define PWM_0_CHANNELS      4
+/* PWM 0 pin configuration */
+#define PWM_0_PORT          
+#define PWM_0_PINS          
+#define PWM_0_PORT_CLKEN()  
+#define PWM_0_CH1_AFCFG()   
+#define PWM_0_CH2_AFCFG()   
+#define PWM_0_CH3_AFCFG()   
+#define PWM_0_CH4_AFCFG()   
 
-// PWM 1 device config
+/* PWM 1 device configuration */
 #define PWM_1_DEV           TIM4
-// PWM 1 pin config
+#define PWM_1_CHANNELS      4
+/* PWM 1 pin configuration */
 #define PWM_1_PORT          
 #define PWM_1_PINS          
+#define PWM_1_PORT_CLKEN()  
+#define PWM_1_CH1_AFCFG()   
+#define PWM_1_CH2_AFCFG()   
+#define PWM_1_CH3_AFCFG()   
+#define PWM_1_CH4_AFCFG()   
 
 
 /**
  * @brief UART configuration
  */
-#define UART_NUMOF          (2U)
+#define UART_NUMOF          (3U)
 #define UART_0_EN           1
 #define UART_1_EN           1
+#define UART_2_EN           1
 #define UART_IRQ_PRIO       1
 
-// UART 1 device config
+// UART 0 device configuration
 #define UART_0_DEV          USART1
 #define UART_0_CLKEN()      RCC_APB2PeriphClockCmd(RCC_APB2Periph_USART1, ENABLE)
 #define UART_0_IRQ          USART1_IRQn
-#define UART_0_IRQ_HANDLER  USART1_IRQHandler
-// UART 1 RX pin config
-#define UART_0_PORT         GPIOC
-#define UART_0_PINS         (GPIO_Pin_4 | GPIO_Pin_5)
-#define UART_0_PORT_CLKEN() RCC_AHBPeriphClockCmd(RCC_AHBPeriph_GPIOC, ENABLE)
-#define UART_0_RX_AFCFG()   (GPIO_PinAFConfig(UART_0_PORT, GPIO_PinSource4, GPIO_AF_7))
-#define UART_0_TX_AFCFG()   (GPIO_PinAFConfig(UART_0_PORT, GPIO_PinSource5, GPIO_AF_7))
+#define UART_0_ISR          isr_usart1
+// UART 0 pin configuration
+#define UART_0_PORT         GPIOA
+#define UART_0_PINS         (GPIO_Pin_9 | GPIO_Pin_10)
+#define UART_0_PORT_CLKEN() RCC_AHBPeriphClockCmd(RCC_AHBPeriph_GPIOA, ENABLE)
+#define UART_0_RX_AFCFG()   (GPIO_PinAFConfig(UART_0_PORT, GPIO_PinSource9, GPIO_AF_7))
+#define UART_0_TX_AFCFG()   (GPIO_PinAFConfig(UART_0_PORT, GPIO_PinSource10, GPIO_AF_7))
 
-// UART 2 device config
+// UART 1 device configuration
 #define UART_1_DEV          USART2
 #define UART_1_CLKEN()      RCC_APB1PeriphClockCmd(RCC_APB1Periph_USART2, ENABLE)
 #define UART_1_IRQ          USART2_IRQn
-#define UART_1_IRQ_HANDLER  USART2_IRQHandler
-// UART 1 RX pin config
-#define UART_1_PORT         GPIOA
-#define UART_1_PINS         (GPIO_Pin_2 | GPIO_Pin_3)
-#define UART_1_PORT_CLKEN() RCC_AHBPeriphClockCmd(RCC_AHBPeriph_GPIOA, ENABLE)
-#define UART_1_RX_AFCFG()   GPIO_PinAFConfig(UART_1_PORT, GPIO_PinSource2, GPIO_AF_7)
-#define UART_1_TX_AFCFG()   GPIO_PinAFConfig(UART_1_PORT, GPIO_PinSource3, GPIO_AF_7)
+#define UART_1_ISR          isr_usart2
+// UART 1 pin configuration
+#define UART_1_PORT         GPIOD
+#define UART_1_PINS         (GPIO_Pin_5 | GPIO_Pin_6)
+#define UART_1_PORT_CLKEN() RCC_AHBPeriphClockCmd(RCC_AHBPeriph_GPIOD, ENABLE)
+#define UART_1_RX_AFCFG()   GPIO_PinAFConfig(UART_1_PORT, GPIO_PinSource5, GPIO_AF_7)
+#define UART_1_TX_AFCFG()   GPIO_PinAFConfig(UART_1_PORT, GPIO_PinSource6, GPIO_AF_7)
+
+// UART 2 device configuration
+#define UART_2_DEV          USART3
+#define UART_2_CLKEN()      RCC_APB1PeriphClockCmd(RCC_APB1Periph_USART3, ENABLE)
+#define UART_2_IRQ          USART3_IRQn
+#define UART_2_ISR          isr_usart3
+// UART 2 pin configuration
+#define UART_2_PORT         GPIOD
+#define UART_2_PINS         (GPIO_Pin_8 | GPIO_Pin_9)
+#define UART_2_PORT_CLKEN() RCC_AHBPeriphClockCmd(RCC_AHBPeriph_GPIOD, ENABLE)
+#define UART_2_RX_AFCFG()   GPIO_PinAFConfig(UART_2_PORT, GPIO_PinSource8, GPIO_AF_7)
+#define UART_2_TX_AFCFG()   GPIO_PinAFConfig(UART_2_PORT, GPIO_PinSource9, GPIO_AF_7)
+
+
 
 /**
  * @brief SPI configuration
  */
-#define SPI_NUMOF           (2U)
-#define SPI_0_EN            1
-#define SPI_1_EN            2
+#define SPI_NUMOF           (0U)                                                        // TODO !!!!!!!
+#define SPI_0_EN            0
+#define SPI_1_EN            0
 
 // SPI 0 device config
+#define SPI_0_DEV           SPI1
+#define SPI_0_CLKEN()       
+#define SPI_0_IRQ           SPI1_IRQn
+#define SPI_0_IRQ_HANDLER   
+#define SPI_0_IRQ_PRIO      1
+// SPI 1 pin configuration
+#define SPI_0_PORT          
+#define SPI_0_PINS          ()
+#define SPI_1_PORT_CLKEN()  
+#define SPI_1_SCK_AFCFG()   
+#define SPI_1_MISO_AFCFG()  
+#define SPI_1_MOSI_AFCFG()  
 
 // SPI 1 device config
-#define SPI_1_DEV           SPI2
+#define SPI_1_DEV           SPI3
 #define SPI_1_CLKEN()       
-#define SPI_1_IRQ           SPI2_IRQn
+#define SPI_1_IRQ           SPI3_IRQn
 #define SPI_1_IRQ_HANDLER   
 #define SPI_1_IRQ_PRIO      1
 // SPI 1 pin configuration
-#define SPI_1_PORT
+#define SPI_1_PORT          
 #define SPI_1_PINS          ()
+#define SPI_1_PORT_CLKEN()  
+#define SPI_1_SCK_AFCFG()   
+#define SPI_1_MISO_AFCFG()  
+#define SPI_1_MOSI_AFCFG()  
 
 
 /**
  * @brief I2C configuration
  */
+#define I2C_NUMOF           (0U)
+#define I2C_0_EN            0
+#define I2C_0_EN            0
+
+/* SPI 0 device configuration */
+#define I2C_0_DEV           I2C1
+#define I2C_0_CLKEN()       
+#define I2C_0_ISR           isr_i2c1
+#define I2C_0_IRQ           I2C1_IRQn
+#define I2C_0_IRQ_PRIO      1
+/* SPI 0 pin configuration */
+#define I2C_0_PORT          GPIOB
+#define I2C_0_PINS          (GPIO_Pin_6 | GPIO_Pin_7)
+#define I2C_0_PORT_CLKEN()  
+#define I2C_0_SCL_AFCFG()   
+#define I2C_0_SDA_AFCFG()   
+
+/* SPI 1 device configuration */
+#define I2C_1_DEV           I2C2
+#define I2C_1_CLKEN()       
+#define I2C_1_ISR           isr_i2c2
+#define I2C_1_IRQ           I2C2_IRQn
+#define I2C_1_IRQ_PRIO      1
+/* SPI 1 pin configuration */
+#define I2C_1_PORT          GPIOF
+#define I2C_1_PINS          (GPIO_Pin_0 | GPIO_Pin_1)
+#define I2C_1_PORT_CLKEN()  
+#define I2C_1_SCL_AFCFG()   
+#define I2C_1_SDA_AFCFG()   
 
 
 /**
@@ -316,32 +418,5 @@
 #define GPIO_15_IRQ         EXTI15_10_IRQn
 #define GPIO_15_EXTI_MAP()  SYSCFG_EXTILineConfig(EXTI_PortSourceGPIOE, EXTI_PinSource13)
 
-
-
-
-
-/**
- * @brief Standard UART (used by puts, printf...) configuration
- *
- * Standard UART is configured to use UART5 on pins PC12 (TX) and PD2 (RX).
- * @{
- */
-#define BCONF_STDUART_DEVICE        UART5
-#define BCONF_STDUART_DEV_IRQ       UART5_IRQn
-#define BCONF_STDUART_DEV_CLK()     RCC_APB1PeriphClockCmd(RCC_APB1Periph_UART5, ENABLE)
-#define BCONF_STDUART_DEV_BAUDRATE  115200
-
-#define BCONF_STDUART_RX_PORT       GPIOD
-#define BCONF_STDUART_RX_PIN        GPIO_Pin_2
-#define BCONF_STDUART_RX_CLK_EN()   RCC_AHBPeriphClockCmd(RCC_AHBPeriph_GPIOD, ENABLE)
-#define BCONF_STDUART_RX_PINSRC     GPIO_PinSource2
-#define BCONF_STDUART_RX_AF         GPIO_AF_5
-
-#define BCONF_STDUART_TX_PORT       GPIOC
-#define BCONF_STDUART_TX_PIN        GPIO_Pin_12
-#define BCONF_STDUART_TX_CLK_EN()   RCC_AHBPeriphClockCmd(RCC_AHBPeriph_GPIOC, ENABLE)
-#define BCONF_STDUART_TX_PINSRC     GPIO_PinSource12
-#define BCONF_STDUART_TX_AF         GPIO_AF_5
-/** @} */
 
 #endif /* __PERIPH_CONF_H */

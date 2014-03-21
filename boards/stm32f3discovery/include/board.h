@@ -21,18 +21,15 @@
 #ifndef __BOARD_H
 #define __BOARD_H
 
-#include "periph/gpio.h"
-
 /**
  * Define the nominal CPU core clock in this board
  */
-#define F_CPU               (72000000U)
+#define F_CPU               (72000000UL)
 
 
 /**
  * Assign the hardware timer
  */
-#define ARCH_MAXTIMERS      (4U)
 #define HW_TIMER            TIMER_0
 
 /**
@@ -68,8 +65,9 @@
 #define GREEN_LED           LED_10
 
 
-
-
+/**
+ * @brief Initialize board specific hardware, including clock, LEDs and std-IO
+ */
 void board_init(void);
 
 
