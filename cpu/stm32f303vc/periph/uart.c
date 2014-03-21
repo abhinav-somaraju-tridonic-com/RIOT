@@ -24,6 +24,7 @@
 
 #include "periph/uart.h"
 #include "periph_conf.h"
+#include "cpu.h"
 
 
 /* --- local typedefs ---------------------------------------------------------------------------*/
@@ -42,8 +43,8 @@ static uart_conf_t config[UART_NUMOF];
 
 
 /* --- public functions -------------------------------------------------------------------------*/
-void uart_init(uart_t uart,
-               uint32_t baudrate,
+int uart_init(uart_t uart,
+               int baudrate,
                void (*rx_cb)(char),
                void (*tx_cb)(void))
 {
@@ -92,7 +93,7 @@ void uart_init(uart_t uart,
             NVIC_Init(&nvic);
             // enable receive interrupt
             USART_ITConfig(UART_0_DEV, USART_IT_RXNE, ENABLE);
-        break;
+            break;
         case UART_1:
             // enable clocks
             UART_1_CLKEN();
@@ -110,38 +111,62 @@ void uart_init(uart_t uart,
             NVIC_Init(&nvic);
             // enable receive interrupt
             USART_ITConfig(UART_1_DEV, USART_IT_RXNE, ENABLE);
-        break;
+            break;
+        case UART_2:
+            // enable clocks
+            UART_2_CLKEN();
+            UART_2_PORT_CLKEN();
+            // configure pins
+            gpio.GPIO_Pin = UART_2_PINS;
+            GPIO_Init(UART_2_PORT, &gpio);
+            UART_2_RX_AFCFG();
+            UART_2_TX_AFCFG();
+            // setup UART device
+            USART_Init(UART_2_DEV, &uart_init);
+            USART_Cmd(UART_2_DEV, ENABLE);
+            // setup irq
+            nvic.NVIC_IRQChannel = UART_2_IRQ;
+            NVIC_Init(&nvic);
+            // enable receive interrupt
+            USART_ITConfig(UART_2_DEV, USART_IT_RXNE, ENABLE);
+            break;
+        default:
+            return -1;
     }
+    return 0;
 }
-
 
 void uart_tx_begin(uart_t uart)
 {
     switch (uart) {
         case UART_0:
             USART_ITConfig(UART_0_DEV, USART_IT_TXE, ENABLE);
-        break;
+            break;
         case UART_1:
             USART_ITConfig(UART_1_DEV, USART_IT_TXE, ENABLE);
-        break;
+            break;
+        case UART_2:
+            USART_ITConfig(UART_2_DEV, USART_IT_TXE, ENABLE);
+            break;
     }
 }
-
 
 void uart_tx_end(uart_t uart)
 {
     switch (uart) {
         case UART_0:
             USART_ITConfig(UART_0_DEV, USART_IT_TXE, DISABLE);
-        break;
+            break;
         case UART_1:
             USART_ITConfig(UART_1_DEV, USART_IT_TXE, DISABLE);
-        break;
+            break;
+        case UART_2:
+            USART_ITConfig(UART_2_DEV, USART_IT_TXE, DISABLE);
+            break;
     }
 }
 
-
-int8_t uart_write(uart_t uart, char data)
+int uart_write(uart_t uart, char data)
 {
     switch (uart) {
         case UART_0:
@@ -149,29 +174,87 @@ int8_t uart_write(uart_t uart, char data)
                 USART_SendData(UART_0_DEV, (uint16_t)data);
                 return 1;
             }
-        break;
+            break;
         case UART_1:
             if (USART_GetFlagStatus(UART_1_DEV, USART_FLAG_TXE) == SET) {
                 USART_SendData(UART_1_DEV, (uint16_t)data);
                 return 1;
             }
-        break;
+            break;
+        case UART_2:
+            if (USART_GetFlagStatus(UART_2_DEV, USART_FLAG_TXE) == SET) {
+                USART_SendData(UART_2_DEV, (uint16_t)data);
+                return 1;
+            }
+            break;
         default:
             return -1;
-        break;
     }
     return 0;
 }
 
-
-void UART_1_IRQ_HANDLER(void)
+int uart_write_blocking(uart_t uart, char data)
 {
-    irq_handler(UART_0, UART_0_DEV);
+    switch (uart) {
+        case UART_0:
+            while (USART_GetFlagStatus(UART_0_DEV, USART_FLAG_TXE) == RESET);
+            USART_SendData(UART_0_DEV, (uint16_t)data);
+            break;
+        case UART_1:
+            while (USART_GetFlagStatus(UART_1_DEV, USART_FLAG_TXE) == RESET);
+            USART_SendData(UART_1_DEV, (uint16_t)data);
+            break;
+        case UART_2:
+            while (USART_GetFlagStatus(UART_2_DEV, USART_FLAG_TXE) == RESET);
+            USART_SendData(UART_2_DEV, (uint16_t)data);
+            break;
+        default:
+            return -1;
+    }
+    return 1;
 }
 
-void UART_2_IRQ_HANDLER(void)
+int uart_read_blocking(uart_t uart, char *data)
 {
+    switch (uart) {
+        case UART_0:
+            while (USART_GetFlagStatus(UART_0_DEV, USART_FLAG_RXNE) == RESET);
+            *data = (char)USART_ReceiveData(UART_0_DEV);
+            break;
+        case UART_1:
+            while (USART_GetFlagStatus(UART_1_DEV, USART_FLAG_RXNE) == RESET);
+            *data = (char)USART_ReceiveData(UART_1_DEV);
+            break;
+        case UART_2:
+            while (USART_GetFlagStatus(UART_2_DEV, USART_FLAG_RXNE) == RESET);
+            *data = (char)USART_ReceiveData(UART_2_DEV);
+            break;
+        default:
+            return -1;
+    }
+    return 1;
+}
+
+
+void UART_0_ISR(void)
+{
+    ISR_ENTER();
+    irq_handler(UART_0, UART_0_DEV);
+    ISR_EXIT();
+}
+
+void UART_1_ISR(void)
+{
+    ISR_ENTER();
     irq_handler(UART_1, UART_1_DEV);
+    ISR_EXIT();
+}
+
+void UART_2_ISR(void)
+{
+    ISR_ENTER();
+    irq_handler(UART_2, UART_2_DEV);
+    ISR_EXIT();
 }
 
 

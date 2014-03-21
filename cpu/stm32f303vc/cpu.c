@@ -6,26 +6,22 @@
  * details.
  */
 
-
 /**
- * @ingroup     UNGROUPED
+ * @ingroup     cpu_stm32f303vg
  * @{
- * @file        cpu.c
- * @brief       Kernel mutex implementation
  * 
- * This is a detailed description of this .c-file contents.
+ * @file        cpu.c
+ * @brief       Implementation of the CPU initialization
  * 
  * @author      First Last <email>
  * @}
  */
 
-#include <stdio.h>
-
 #include "cpu.h"
 #include "stm32f30x.h"
 
 /**
- * @brief Initialize the CPU, set IRQ priorities and other stuff
+ * @brief Initialize the CPU, set IRQ priorities
  */
 void cpu_init(void)
 {

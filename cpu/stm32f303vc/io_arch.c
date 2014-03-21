@@ -19,13 +19,8 @@
  */
 
 #include "arch/io_arch.h"
-#include "bsp/uart.h"
 
-int io_arch_puts(char *data, int size)
-{
-    int i;
-    for (i = 0; i < size; i++) {
-        uart_writec(data[i]);
-    }
-    return i;
-}
+// int io_arch_puts(char *data, int size)
+// {
+//     return 0;
+// }

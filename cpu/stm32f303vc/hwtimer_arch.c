@@ -13,22 +13,18 @@
  * @file        hwtimer_arch.c
  * @brief       Implementation of the kernels hwtimer interface
  *
- * The hardware timer implementation uses the Coretex build-in system timer as backend.
+ * The hardware timer implementation uses the Cortex build-in system timer as back-end.
  *
  * @author      Hauke Petersen <hauke.petersen@fu-berlin.de>
  *
  * @}
  */
 
-#include <stdint.h>
-#include <stddef.h>
-
 #include "hwtimer_arch.h"
 #include "board.h"
 #include "periph/timer.h"
 #include "thread.h"
 
-#include "board.h"
 
 void irq_handler(int channel);
 void (*timeout_handler)(int);
@@ -52,7 +48,7 @@ void hwtimer_arch_disable_interrupt(void)
 
 void hwtimer_arch_set(unsigned long offset, short timer)
 {
-    timer_set(HW_TIMER, timer + 1, offset);
+    timer_set(HW_TIMER, timer, offset);
 }
 
 void hwtimer_arch_set_absolute(unsigned long value, short timer)
@@ -62,7 +58,7 @@ void hwtimer_arch_set_absolute(unsigned long value, short timer)
 
 void hwtimer_arch_unset(short timer)
 {
-    timer_clear(HW_TIMER, timer + 1);
+    timer_clear(HW_TIMER, timer);
 }
 
 unsigned long hwtimer_arch_now(void)
@@ -72,6 +68,6 @@ unsigned long hwtimer_arch_now(void)
 
 void irq_handler(int channel)
 {
-    timeout_handler((short)(channel - 1));
+    timeout_handler((short)(channel));
     thread_yield();
 }

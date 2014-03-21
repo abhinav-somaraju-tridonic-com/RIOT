@@ -1,96 +1,309 @@
+/*
+ * Copyright (C) 2013 Freie Universität Berlin
+ *
+ * This file is subject to the terms and conditions of the GNU Lesser General
+ * Public License. See the file LICENSE in the top level directory for more
+ * details.
+ */
+
+/**
+ * @ingroup     cpu_stm32f303vg
+ * @{
+ *
+ * @file        startup.c
+ * @brief       Startup code and interrupt vector definition
+ *
+ * @author      Hauke Petersen <hauke.petersen@fu-berlin.de>
+ *
+ * @}
+ */
+#include <stdint.h>
+
+/**
+ * memory markers as defined in the linker script 
+ */
+extern uint32_t _sfixed;
+extern uint32_t _efixed;
+extern uint32_t _etext;
+extern uint32_t _srelocate;
+extern uint32_t _erelocate;
+extern uint32_t _szero;
+extern uint32_t _ezero;
+extern uint32_t _sstack;
+extern uint32_t _estack;
 
 
-#define WEAK_ALIAS(x) __attribute__ ((weak, alias(#x)))
+/**
+ * @brief functions for initializing the board, std-lib and kernel
+ */
+extern void board_init(void);
+extern void kernel_init(void);
+extern void __libc_init_array(void);
 
-extern int _stack_end;
+/**
+ * @brief This function is the entry point after a system reset
+ * 
+ * After a system reset, the following steps are necessary and carried out:
+ * 1. load data section from flash to ram
+ * 2. overwrite uninitialized data section (BSS) with zeros
+ * 3. initialize the newlib
+ * 4. initialize the board (sync clock, setup std-IO)
+ * 5. initialize and start RIOTs kernel
+ */
+void reset_handler(void)
+{
+    uint32_t *dst;
+    uint32_t *src = &_etext;
 
-/* Cortex M3 core interrupt handlers */
-void reset_handler(void);
-void nmi_handler(void) WEAK_ALIAS(default_handler);
-void hard_fault_handler(void) WEAK_ALIAS(default_handler);
-void mem_manage_handler(void) WEAK_ALIAS(default_handler);
-void bus_fault_handler(void) WEAK_ALIAS(default_handler);
-void usage_fault_handler(void) WEAK_ALIAS(default_handler);
-void svc_isr(void) WEAK_ALIAS(default_handler);
-void debug_mon_handler(void) WEAK_ALIAS(default_handler);
-void pendsv_isr(void) WEAK_ALIAS(default_handler);
-void systick_isr(void) WEAK_ALIAS(default_handler);
+    /* load data section from flash to ram */
+    for (dst = &_srelocate; dst < &_erelocate; ) {
+        *(dst++) = *(src++);
+    }
+    
+    /* default bss section to zero */
+    for (dst = &_szero; dst < &_ezero; ) {
+        *(dst++) = 0;
+    }
 
-/* LPC13xx specific interrupt handlers */
-void WAKEUP_Handler(void) WEAK_ALIAS(default_handler);
-void I2C_Handler(void) WEAK_ALIAS(default_handler);
-void TIMER_16_0_Handler(void) WEAK_ALIAS(default_handler);
-void TIMER_16_1_Handler(void) WEAK_ALIAS(default_handler);
-void TIMER_32_0_Handler(void) WEAK_ALIAS(default_handler);
-void TIMER_32_1_Handler(void) WEAK_ALIAS(default_handler);
-void SSP_Handler(void) WEAK_ALIAS(default_handler);
-void UART_Handler(void) WEAK_ALIAS(default_handler);
-void USB_IRQ_Handler(void) WEAK_ALIAS(default_handler);
-void USB_FIQ_Handler(void) WEAK_ALIAS(default_handler);
-void ADC_Handler(void) WEAK_ALIAS(default_handler);
-void WDT_Handler(void) WEAK_ALIAS(default_handler);
-void BOD_Handler(void) WEAK_ALIAS(default_handler);
-void EINT3_Handler(void) WEAK_ALIAS(default_handler);
-void EINT2_Handler(void) WEAK_ALIAS(default_handler);
-void EINT1_Handler(void) WEAK_ALIAS(default_handler);
-void EINT0_Handler(void) WEAK_ALIAS(default_handler);
+    /* initialize the board and startup the kernel */
+    board_init();
+    /* initialize std-c library (this must be done after board_init!!!) */
+    __libc_init_array();
+    /* startup the kernel */
+    kernel_init();
+}
 
-void default_handler(void);
-
-
-
-/* Stack top and vector handler table */
-void *vector_table[] __attribute__ ((section(".text.isr_vector"))) = {
-    &_stack_end,
-    reset_handler,
-    nmi_handler,
-    hard_fault_handler,
-    mem_manage_handler,
-    bus_fault_handler,
-    usage_fault_handler,
-    0,
-    0,
-    0,
-    0,
-    svc_isr,
-    debug_mon_handler,
-    0,
-    pendsv_isr,
-    systick_isr,
-
-    /* LPC13xx specific interrupt vectors */
-    WAKEUP_Handler, WAKEUP_Handler, WAKEUP_Handler, WAKEUP_Handler,
-    WAKEUP_Handler, WAKEUP_Handler, WAKEUP_Handler, WAKEUP_Handler,
-    WAKEUP_Handler, WAKEUP_Handler, WAKEUP_Handler, WAKEUP_Handler,
-    WAKEUP_Handler, WAKEUP_Handler, WAKEUP_Handler, WAKEUP_Handler,
-    WAKEUP_Handler, WAKEUP_Handler, WAKEUP_Handler, WAKEUP_Handler,
-    WAKEUP_Handler, WAKEUP_Handler, WAKEUP_Handler, WAKEUP_Handler,
-    WAKEUP_Handler, WAKEUP_Handler, WAKEUP_Handler, WAKEUP_Handler,
-    WAKEUP_Handler, WAKEUP_Handler, WAKEUP_Handler, WAKEUP_Handler,
-    WAKEUP_Handler, WAKEUP_Handler, WAKEUP_Handler, WAKEUP_Handler,
-    WAKEUP_Handler, WAKEUP_Handler, WAKEUP_Handler, WAKEUP_Handler,
-    I2C_Handler,
-    TIMER_16_0_Handler,
-    TIMER_16_1_Handler,
-    TIMER_32_0_Handler,
-    TIMER_32_1_Handler,
-    SSP_Handler,
-    UART_Handler,
-    USB_IRQ_Handler,
-    USB_FIQ_Handler,
-    ADC_Handler,
-    WDT_Handler,
-    BOD_Handler,
-    EINT3_Handler,
-    EINT2_Handler,
-    EINT1_Handler,
-    EINT0_Handler,
-};
-
-
-
-
-void default_handler(void)
+/**
+ * @brief Default handler is called in case no interrupt handler was defined
+ */
+void dummy_handler(void)
 {
     while (1) {asm ("nop");}
 }
+
+
+void isr_nmi(void)
+{
+    while (1) {asm ("nop");}
+}
+
+void isr_mem_manage(void)
+{
+    while (1) {asm ("nop");}
+}
+
+void isr_debug_mon(void)
+{
+    while (1) {asm ("nop");}
+}
+
+void isr_hard_fault(void)
+{
+    while (1) {asm ("nop");}
+}
+
+void isr_bus_fault(void)
+{
+    while (1) {asm ("nop");}
+}
+
+void isr_usage_fault(void)
+{
+    while (1) {asm ("nop");}
+}
+
+/* Cortex-M specific interrupt vectors */
+void isr_svc(void)                  __attribute__ ((weak, alias("dummy_handler")));
+void isr_pendsv(void)               __attribute__ ((weak, alias("dummy_handler")));
+void isr_systick(void)              __attribute__ ((weak, alias("dummy_handler")));
+
+/* STM32F303VC specific interrupt vector */
+void isr_wwdg(void)                 __attribute__ ((weak, alias("dummy_handler")));
+void isr_pvd(void)                  __attribute__ ((weak, alias("dummy_handler")));
+void isr_tamp_stamp(void)           __attribute__ ((weak, alias("dummy_handler")));
+void isr_rtc_wkup(void)             __attribute__ ((weak, alias("dummy_handler")));
+void isr_flash(void)                __attribute__ ((weak, alias("dummy_handler")));
+void isr_rcc(void)                  __attribute__ ((weak, alias("dummy_handler")));
+void isr_exti0(void)                __attribute__ ((weak, alias("dummy_handler")));
+void isr_exti1(void)                __attribute__ ((weak, alias("dummy_handler")));
+void isr_exti2(void)                __attribute__ ((weak, alias("dummy_handler")));
+void isr_exti3(void)                __attribute__ ((weak, alias("dummy_handler")));
+void isr_exti4(void)                __attribute__ ((weak, alias("dummy_handler")));
+void isr_dma1_stream0(void)         __attribute__ ((weak, alias("dummy_handler")));
+void isr_dma1_stream1(void)         __attribute__ ((weak, alias("dummy_handler")));
+void isr_dma1_stream2(void)         __attribute__ ((weak, alias("dummy_handler")));
+void isr_dma1_stream3(void)         __attribute__ ((weak, alias("dummy_handler")));
+void isr_dma1_stream4(void)         __attribute__ ((weak, alias("dummy_handler")));
+void isr_dma1_stream5(void)         __attribute__ ((weak, alias("dummy_handler")));
+void isr_dma1_stream6(void)         __attribute__ ((weak, alias("dummy_handler")));
+void isr_adc(void)                  __attribute__ ((weak, alias("dummy_handler")));
+void isr_can1_tx(void)              __attribute__ ((weak, alias("dummy_handler")));
+void isr_can1_rx0(void)             __attribute__ ((weak, alias("dummy_handler")));
+void isr_can1_rx1(void)             __attribute__ ((weak, alias("dummy_handler")));
+void isr_can1_sce(void)             __attribute__ ((weak, alias("dummy_handler")));
+void isr_exti9_5(void)              __attribute__ ((weak, alias("dummy_handler")));
+void isr_tim1_brk_tim9(void)        __attribute__ ((weak, alias("dummy_handler")));
+void isr_tim1_up_tim10(void)        __attribute__ ((weak, alias("dummy_handler")));
+void isr_tim1_trg_com_tim11(void)   __attribute__ ((weak, alias("dummy_handler")));
+void isr_tim1_cc(void)              __attribute__ ((weak, alias("dummy_handler")));
+void isr_tim2(void)                 __attribute__ ((weak, alias("dummy_handler")));
+void isr_tim3(void)                 __attribute__ ((weak, alias("dummy_handler")));
+void isr_tim4(void)                 __attribute__ ((weak, alias("dummy_handler")));
+void isr_i2c1_ev(void)              __attribute__ ((weak, alias("dummy_handler")));
+void isr_i2c1_er(void)              __attribute__ ((weak, alias("dummy_handler")));
+void isr_i2c2_ev(void)              __attribute__ ((weak, alias("dummy_handler")));
+void isr_i2c2_er(void)              __attribute__ ((weak, alias("dummy_handler")));
+void isr_spi1(void)                 __attribute__ ((weak, alias("dummy_handler")));
+void isr_spi2(void)                 __attribute__ ((weak, alias("dummy_handler")));
+void isr_usart1(void)               __attribute__ ((weak, alias("dummy_handler")));
+void isr_usart2(void)               __attribute__ ((weak, alias("dummy_handler")));
+void isr_usart3(void)               __attribute__ ((weak, alias("dummy_handler")));
+void isr_exti15_10(void)            __attribute__ ((weak, alias("dummy_handler")));
+void isr_rtc_alarm(void)            __attribute__ ((weak, alias("dummy_handler")));
+void isr_otg_fs_wkup(void)          __attribute__ ((weak, alias("dummy_handler")));
+void isr_tim8_brk_tim12(void)       __attribute__ ((weak, alias("dummy_handler")));
+void isr_tim8_up_tim13(void)        __attribute__ ((weak, alias("dummy_handler")));
+void isr_tim8_trg_com_tim14(void)   __attribute__ ((weak, alias("dummy_handler")));
+void isr_tim8_cc(void)              __attribute__ ((weak, alias("dummy_handler")));
+void isr_dma1_stream7(void)         __attribute__ ((weak, alias("dummy_handler")));
+void isr_fsmc(void)                 __attribute__ ((weak, alias("dummy_handler")));
+void isr_sdio(void)                 __attribute__ ((weak, alias("dummy_handler")));
+void isr_tim5(void)                 __attribute__ ((weak, alias("dummy_handler")));
+void isr_spi3(void)                 __attribute__ ((weak, alias("dummy_handler")));
+void isr_uart4(void)                __attribute__ ((weak, alias("dummy_handler")));
+void isr_uart5(void)                __attribute__ ((weak, alias("dummy_handler")));
+void isr_tim6_dac(void)             __attribute__ ((weak, alias("dummy_handler")));
+void isr_tim7(void)                 __attribute__ ((weak, alias("dummy_handler")));
+void isr_dma2_stream0(void)         __attribute__ ((weak, alias("dummy_handler")));
+void isr_dma2_stream1(void)         __attribute__ ((weak, alias("dummy_handler")));
+void isr_dma2_stream2(void)         __attribute__ ((weak, alias("dummy_handler")));
+void isr_dma2_stream3(void)         __attribute__ ((weak, alias("dummy_handler")));
+void isr_dma2_stream4(void)         __attribute__ ((weak, alias("dummy_handler")));
+void isr_eth(void)                  __attribute__ ((weak, alias("dummy_handler")));
+void isr_eth_wkup(void)             __attribute__ ((weak, alias("dummy_handler")));
+void isr_can2_tx(void)              __attribute__ ((weak, alias("dummy_handler")));
+void isr_can2_rx0(void)             __attribute__ ((weak, alias("dummy_handler")));
+void isr_can2_rx1(void)             __attribute__ ((weak, alias("dummy_handler")));
+void isr_can2_sce(void)             __attribute__ ((weak, alias("dummy_handler")));
+void isr_otg_fs(void)               __attribute__ ((weak, alias("dummy_handler")));
+void isr_dma2_stream5(void)         __attribute__ ((weak, alias("dummy_handler")));
+void isr_dma2_stream6(void)         __attribute__ ((weak, alias("dummy_handler")));
+void isr_dma2_stream7(void)         __attribute__ ((weak, alias("dummy_handler")));
+void isr_usart6(void)               __attribute__ ((weak, alias("dummy_handler")));
+void isr_i2c3_ev(void)              __attribute__ ((weak, alias("dummy_handler")));
+void isr_i2c3_er(void)              __attribute__ ((weak, alias("dummy_handler")));
+void isr_otg_hs_ep1_out(void)       __attribute__ ((weak, alias("dummy_handler")));
+void isr_otg_hs_ep1_in(void)        __attribute__ ((weak, alias("dummy_handler")));
+void isr_otg_hs_wkup(void)          __attribute__ ((weak, alias("dummy_handler")));
+void isr_otg_hs(void)               __attribute__ ((weak, alias("dummy_handler")));
+void isr_dcmi(void)                 __attribute__ ((weak, alias("dummy_handler")));
+void isr_cryp(void)                 __attribute__ ((weak, alias("dummy_handler")));
+void isr_hash_rng(void)             __attribute__ ((weak, alias("dummy_handler")));
+void isr_fpu(void)                  __attribute__ ((weak, alias("dummy_handler")));
+
+
+/* interrupt vector table */
+__attribute__ ((section(".vectors")))
+const void *interrupt_vector[] = {
+    /* Stack pointer */
+    (void*) (&_estack),             /* pointer to the top of the empty stack */
+    /* Cortex-M handlers */
+    (void*) reset_handler,          /* entry point of the program */
+    (void*) isr_nmi,                /* non maskable interrupt handler */
+    (void*) isr_hard_fault,         /* if you end up here its not good */
+    (void*) isr_mem_manage,         /* memory controller interrupt */
+    (void*) isr_bus_fault,          /* also not good to end up here */
+    (void*) isr_usage_fault,        /* autsch */
+    (void*) (0UL),                  /* Reserved */
+    (void*) (0UL),                  /* Reserved */
+    (void*) (0UL),                  /* Reserved */
+    (void*) (0UL),                  /* Reserved */
+    (void*) isr_svc,                /* system call interrupt */
+    (void*) isr_debug_mon,          /* debug interrupt */
+    (void*) (0UL),                  /* Reserved */
+    (void*) isr_pendsv,             /* pendSV interrupt, used for task switching in RIOT */
+    (void*) isr_systick,            /* SysTick interrupt, not used in RIOT */
+    /* STM specific peripheral handlers */
+    (void*) isr_wwdg,               /* Window WatchDog              */
+    (void*) isr_pvd,                /* PVD through EXTI Line detection */
+    (void*) isr_tamp_stamp,         /* Tamper and TimeStamps through the EXTI line */
+    (void*) isr_rtc_wkup,           /* RTC Wakeup through the EXTI line */
+    (void*) isr_flash,              /* FLASH                        */
+    (void*) isr_rcc,                /* RCC                          */
+    (void*) isr_exti0,              /* EXTI Line0                   */
+    (void*) isr_exti1,              /* EXTI Line1                   */
+    (void*) isr_exti2,              /* EXTI Line2                   */
+    (void*) isr_exti3,              /* EXTI Line3                   */
+    (void*) isr_exti4,              /* EXTI Line4                   */
+    (void*) isr_dma1_stream0,       /* DMA1 Stream 0                */
+    (void*) isr_dma1_stream1,       /* DMA1 Stream 1                */
+    (void*) isr_dma1_stream2,       /* DMA1 Stream 2                */
+    (void*) isr_dma1_stream3,       /* DMA1 Stream 3                */
+    (void*) isr_dma1_stream4,       /* DMA1 Stream 4                */
+    (void*) isr_dma1_stream5,       /* DMA1 Stream 5                */
+    (void*) isr_dma1_stream6,       /* DMA1 Stream 6                */
+    (void*) isr_adc,                /* ADC1, ADC2 and ADC3s         */
+    (void*) isr_can1_tx,            /* CAN1 TX                      */
+    (void*) isr_can1_rx0,           /* CAN1 RX0                     */
+    (void*) isr_can1_rx1,           /* CAN1 RX1                     */
+    (void*) isr_can1_sce,           /* CAN1 SCE                     */
+    (void*) isr_exti9_5,            /* External Line[9:5]s          */
+    (void*) isr_tim1_brk_tim9,      /* TIM1 Break and TIM9          */
+    (void*) isr_tim1_up_tim10,      /* TIM1 Update and TIM10        */
+    (void*) isr_tim1_trg_com_tim11, /* TIM1 Trigger and Commutation and TIM11 */
+    (void*) isr_tim1_cc,            /* TIM1 Capture Compare         */
+    (void*) isr_tim2,               /* TIM2                         */
+    (void*) isr_tim3,               /* TIM3                         */
+    (void*) isr_tim4,               /* TIM4                         */
+    (void*) isr_i2c1_ev,            /* I2C1 Event                   */
+    (void*) isr_i2c1_er,            /* I2C1 Error                   */
+    (void*) isr_i2c2_ev,            /* I2C2 Event                   */
+    (void*) isr_i2c2_er,            /* I2C2 Error                   */
+    (void*) isr_spi1,               /* SPI1                         */
+    (void*) isr_spi2,               /* SPI2                         */
+    (void*) isr_usart1,             /* USART1                       */
+    (void*) isr_usart2,             /* USART2                       */
+    (void*) isr_usart3,             /* USART3                       */
+    (void*) isr_exti15_10,          /* External Line[15:10]s        */
+    (void*) isr_rtc_alarm,          /* RTC Alarm (A and B) through EXTI Line */
+    (void*) isr_otg_fs_wkup,        /* USB OTG FS Wakeup through EXTI line */
+    (void*) isr_tim8_brk_tim12,     /* TIM8 Break and TIM12         */
+    (void*) isr_tim8_up_tim13,      /* TIM8 Update and TIM13        */
+    (void*) isr_tim8_trg_com_tim14, /* TIM8 Trigger and Commutation and TIM14 */
+    (void*) isr_tim8_cc,            /* TIM8 Capture Compare         */
+    (void*) isr_dma1_stream7,       /* DMA1 Stream7                 */
+    (void*) isr_fsmc,               /* FSMC                         */
+    (void*) isr_sdio,               /* SDIO                         */
+    (void*) isr_tim5,               /* TIM5                         */
+    (void*) isr_spi3,               /* SPI3                         */
+    (void*) isr_uart4,              /* UART4                        */
+    (void*) isr_uart5,              /* UART5                        */
+    (void*) isr_tim6_dac,           /* TIM6 and DAC1&2 underrun errors */
+    (void*) isr_tim7,               /* TIM7                         */
+    (void*) isr_dma2_stream0,       /* DMA2 Stream 0                */
+    (void*) isr_dma2_stream1,       /* DMA2 Stream 1                */
+    (void*) isr_dma2_stream2,       /* DMA2 Stream 2                */
+    (void*) isr_dma2_stream3,       /* DMA2 Stream 3                */
+    (void*) isr_dma2_stream4,       /* DMA2 Stream 4                */
+    (void*) isr_eth,                /* Ethernet                     */
+    (void*) isr_eth_wkup,           /* Ethernet Wakeup through EXTI line */
+    (void*) isr_can2_tx,            /* CAN2 TX                      */
+    (void*) isr_can2_rx0,           /* CAN2 RX0                     */
+    (void*) isr_can2_rx1,           /* CAN2 RX1                     */
+    (void*) isr_can2_sce,           /* CAN2 SCE                     */
+    (void*) isr_otg_fs,             /* USB OTG FS                   */
+    (void*) isr_dma2_stream5,       /* DMA2 Stream 5                */
+    (void*) isr_dma2_stream6,       /* DMA2 Stream 6                */
+    (void*) isr_dma2_stream7,       /* DMA2 Stream 7                */
+    (void*) isr_usart6,             /* USART6                       */
+    (void*) isr_i2c3_ev,            /* I2C3 event                   */
+    (void*) isr_i2c3_er,            /* I2C3 error                   */
+    (void*) isr_otg_hs_ep1_out,     /* USB OTG HS End Point 1 Out   */
+    (void*) isr_otg_hs_ep1_in,      /* USB OTG HS End Point 1 In    */
+    (void*) isr_otg_hs_wkup,        /* USB OTG HS Wakeup through EXTI */
+    (void*) isr_otg_hs,             /* USB OTG HS                   */
+    (void*) isr_dcmi,               /* DCMI                         */
+    (void*) isr_cryp,               /* CRYP crypto                  */
+    (void*) isr_hash_rng,           /* Hash and Rng                 */
+    (void*) isr_fpu                 /* FPU                          */
+};

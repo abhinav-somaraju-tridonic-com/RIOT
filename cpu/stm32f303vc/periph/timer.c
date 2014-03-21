@@ -28,6 +28,8 @@
 #include "periph_conf.h"
 
 #include "board.h"
+#include "cpu.h"
+
 
 static inline void irq_handler(tim_t timer, TIM_TypeDef *dev);
 
@@ -104,26 +106,25 @@ int timer_set(tim_t dev, int channel, int timeout)
             break;
     }
     switch (channel) {
-        case 1:
+        case 0:
             TIM_SetCompare1(timer, now + timeout - 1);
             TIM_ITConfig(timer, TIM_IT_CC1, ENABLE);
             break;
-        case 2:
+        case 1:
             TIM_SetCompare2(timer, now + timeout - 1);
             TIM_ITConfig(timer, TIM_IT_CC2, ENABLE);
             break;
-        case 3:
+        case 2:
             TIM_SetCompare3(timer, now + timeout - 1);
             TIM_ITConfig(timer, TIM_IT_CC3, ENABLE);
             break;
-        case 4:
+        case 3:
             TIM_SetCompare4(timer, now + timeout - 1);
             TIM_ITConfig(timer, TIM_IT_CC4, ENABLE);
             break;
     }
     return 0;
 }
-
 
 int timer_clear(tim_t dev, int channel)
 {
@@ -137,16 +138,16 @@ int timer_clear(tim_t dev, int channel)
             break;
     }
     switch (channel) {
-        case 1:
+        case 0:
             TIM_ITConfig(timer, TIM_IT_CC1, DISABLE);
             break;
-        case 2:
+        case 1:
             TIM_ITConfig(timer, TIM_IT_CC2, DISABLE);
             break;
-        case 3:
+        case 2:
             TIM_ITConfig(timer, TIM_IT_CC3, DISABLE);
             break;
-        case 4:
+        case 3:
             TIM_ITConfig(timer, TIM_IT_CC4, DISABLE);
             break;
     }
@@ -228,43 +229,39 @@ void timer_reset(tim_t dev)
 }
 
 
+__attribute__ ((naked))
+void TIMER_0_ISR(void)
+{
+    ISR_ENTER();
+    irq_handler(TIMER_0, TIMER_0_DEV);
+    ISR_EXIT();
+}
+
+__attribute__ ((naked))
+void TIMER_1_ISR(void)
+{
+    ISR_ENTER();
+    irq_handler(TIMER_1, TIMER_1_DEV);
+    ISR_EXIT();
+}
+
 static inline void irq_handler(tim_t timer, TIM_TypeDef *dev)
 {
     if (TIM_GetITStatus(dev, TIM_IT_CC1) == SET) {
         TIM_ClearITPendingBit(dev, TIM_IT_CC1);
         TIM_ITConfig(dev, TIM_IT_CC1, DISABLE);
-        config[timer].cb(1);
+        config[timer].cb(0);
     } else if (TIM_GetITStatus(dev, TIM_IT_CC2) == SET) {
         TIM_ClearITPendingBit(dev, TIM_IT_CC2);
         TIM_ITConfig(dev, TIM_IT_CC2, DISABLE);
-        config[timer].cb(2);
+        config[timer].cb(1);
     } else if (TIM_GetITStatus(dev, TIM_IT_CC3) == SET) {
         TIM_ClearITPendingBit(dev, TIM_IT_CC3);
         TIM_ITConfig(dev, TIM_IT_CC3, DISABLE);
-        config[timer].cb(3);
+        config[timer].cb(2);
     } else if (TIM_GetITStatus(dev, TIM_IT_CC4) == SET) {
         TIM_ClearITPendingBit(dev, TIM_IT_CC4);
         TIM_ITConfig(dev, TIM_IT_CC4, DISABLE);
-        config[timer].cb(4);
+        config[timer].cb(3);
     }
 }
-
-
-#ifdef TIMER_0_EN
-__attribute__((naked))
-void TIMER_0_ISR(void)
-{
-    asm("push   {LR}");
-    irq_handler(TIMER_0, TIMER_0_DEV);
-    asm("pop    {r0}");
-    asm("bx     r0");
-}
-#endif
-
-#ifdef TIMER_1_EN
-__attribute__((naked))
-void TIMER_1_ISR(void)
-{
-    irq_handler(TIMER_1, TIMER_1_DEV);
-}
-#endif
