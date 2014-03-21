@@ -274,7 +274,7 @@ int vtimer_remove(vtimer_t *t)
     update_shortterm();
 
     if (!inISR()) {
-        eINT();
+        enableIRQ();
     }
 
     return 0;
