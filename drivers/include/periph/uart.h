@@ -84,5 +84,9 @@ void uart_tx_end(uart_t uart);
  */
 int uart_write(uart_t uart, char data);
 
+int uart_write_blocking(uart_t uart, char data);
+
+int uart_read_blocking(uart_t uart, char *data);
+
 #endif /* __PERIPH_UART_H */
 /** @} */
