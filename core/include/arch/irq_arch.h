@@ -22,6 +22,7 @@
 #ifndef __IRQ_ARCH_H
 #define __IRQ_ARCH_H
 
+#ifdef COREIF_NG
 /**
  * @brief Define mapping between kernel internal and arch interfaces
  * @{
@@ -31,6 +32,7 @@
 #define restoreIRQ      irq_arch_restore
 #define inISR           irq_arch_in
 /** @} */
+#endif
 
 /**
  * @brief Globally enable maskable interrupt sources

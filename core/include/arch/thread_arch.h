@@ -19,12 +19,12 @@
 #ifndef __THREAD_ARCH_H
 #define __THREAD_ARCH_H
 
-
+#ifdef COREIF_NG
 #define thread_stack_init               thread_arch_stack_init
 #define thread_print_stack              thread_arch_print_stack
 #define cpu_switch_context_exit         thread_arch_start_threading
 #define thread_yield                    thread_arch_yield
-
+#endif
 
 
 char *thread_arch_stack_init(void  (*task_func)(void), void *stack_start, int stack_size);

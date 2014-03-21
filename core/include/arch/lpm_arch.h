@@ -22,6 +22,7 @@
 #ifndef __LPM_ARCH_H
 #define __LPM_ARCH_H
 
+#ifdef COREIF_NG
 /**
  * @brief Define the mapping between the architecture independent interfaces
           and the kernel internal interfaces
@@ -34,6 +35,7 @@
 #define lpm_begin_awake     lpm_arch_begin_awake
 #define lpm_end_awake       lpm_arch_end_awake
 /** @} */
+#endif
 
 /**
  * @brief   Available power modes

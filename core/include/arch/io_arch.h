@@ -19,12 +19,14 @@
 #ifndef __IO_ARCH_H
 #define __IO_ARCH_H
 
+#ifdef COREIF_NG
 /**
  * @brief Define mapping between kernel internal and arch interfaces
  * @{
  */
 #define fw_puts         io_arch_puts
 /** @} */
+#endif
 
 /**
  * @brief Write a number of characters to the std-out

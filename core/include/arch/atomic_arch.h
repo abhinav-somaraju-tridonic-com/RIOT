@@ -19,12 +19,14 @@
 #ifndef __ATOMIC_ARCH_H
 #define __ATOMIC_ARCH_H
 
+#ifdef COREIF_NG
 /**
  * @brief Define mappings between arch and internal interfaces
  * @{
  */
 #define atomic_set_return       atomic_arch_set_return
 /** @} */
+#endif
 
 /**
  * @brief Set a value atomically without interruption from interrupts etc.
