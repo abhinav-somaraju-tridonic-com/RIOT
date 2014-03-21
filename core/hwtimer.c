@@ -24,9 +24,9 @@
 #include "lifo.h"
 #include "mutex.h"
 #include "irq.h"
+#include "board.h"
 
 #include "hwtimer.h"
-#include "hwtimer_cpu.h"
 #include "hwtimer_arch.h"
 
 /*---------------------------------------------------------------------------*/
