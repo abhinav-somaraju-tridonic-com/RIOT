@@ -1,11 +1,11 @@
 # name of your application
-export PROJECT = shell
+PROJECT = shell
 
 # If no BOARD is found in the environment, use this default:
 export BOARD ?= native
 
 # This has to be the absolute path to the RIOT base directory:
-export RIOTBASE ?= $(CURDIR)/../..
+RIOTBASE ?= $(CURDIR)/../..
 
 # Uncomment these lines if you want to use platform support from external
 # repositories:

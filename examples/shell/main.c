@@ -44,6 +44,8 @@ static const shell_command_t shell_commands[] = {
  */
 void cmd_hello(int argc, char **argv)
 {
+    (void)argc;
+    (void)argv;
     puts("Hello to you, too!");         // TODO -> this should be printed through shell->put_char()
 }
 
