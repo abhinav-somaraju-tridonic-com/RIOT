@@ -28,6 +28,14 @@
 #include "cpu-conf.h"
 
 /**
+ * For downwards compatibility with old RIOT code.
+ * TODO: remove once core was adjusted
+ */
+#include "irq.h"
+#define eINT            enableIRQ
+#define dINT            disableIRQ
+
+/**
  * @brief Macro has to be called in the beginning of each ISR
  */
 #define ISR_ENTER()         asm("push {LR}")
