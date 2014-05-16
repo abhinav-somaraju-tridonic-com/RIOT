@@ -2,6 +2,8 @@
 # this CPU implementation is using the new core/CPU interface
 export CFLAGS += -DCOREIF_NG=1
 
+export CFLAGS += -DCORTEX_M0
+
 # tell the build system that the CPU depends on the Cortex-M common files
 export USEMODULE += cortexm_common
 
@@ -11,7 +13,7 @@ export CORTEX_COMMON = $(RIOTCPU)/cortexm_common/
 # define the ST standard peripheral library and the specific CPU
 #export STM_LIB_BASE = $(RIOTBASE)/pkg/stm32f0_stdperiph_lib/
 
-# add the type of MCU used to the compiler flags 
+# add the type of MCU used to the compiler flags
 # (see stmlib/Libraries/CMSIS/Device/ST/STM32F30x/Include/stm32f30x.h for available types)
 #export CFLAGS += -DUSE_STDPERIPH_DRIVER -DSTM32F0XX
 export CFLAGS += -DSTM32F051
