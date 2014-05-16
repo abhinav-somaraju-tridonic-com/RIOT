@@ -202,6 +202,7 @@ __attribute__((always_inline)) static __INLINE void context_save(void)
 #if CORTEX_M0
 
 #else
+    asm(".thumb");
     asm("mrs    r0, psp"            );      /* get stack pointer from user mode */
     asm("stmdb  r0!,{r4-r11}"       );      /* save regs */
     asm("stmdb  r0!,{lr}"           );      /* exception return value */
