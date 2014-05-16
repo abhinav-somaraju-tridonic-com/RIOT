@@ -16,8 +16,7 @@ export FLASHER = st-flash
 
 # define build specific options
 export CPU_USAGE = -mcpu=cortex-m0
-export FPU_USAGE = -msoft-float #-mfloat-abi=hard -mfpu=fpv4-sp-d16
-export CFLAGS = -ggdb -g3 -std=gnu99 -Os -Wall -Wstrict-prototypes $(CPU_USAGE) $(FPU_USAGE) -mlittle-endian -mthumb -mthumb-interwork -nostartfiles
+export CFLAGS = -ggdb -g3 -std=gnu99 -Os -Wall -Wstrict-prototypes $(CPU_USAGE) -mlittle-endian -mthumb -mthumb-interwork -nostartfiles
 export CFLAGS += -DREENTRANT_SYSCALLS_PROVIDED
 export CFLAGS += -flto -ffunction-sections -fdata-sections -fno-builtin  # addiontal compiler flags to optimize compiling for newlib-nano
 export ASFLAGS = -ggdb -g3 -mcpu=cortex-m4 $(FPU_USAGE) -mlittle-endian
