@@ -9,12 +9,12 @@
 /**
  * @ingroup     driver_periph
  * @{
- * 
+ *
  * @file        uart.c
  * @brief       Low-level UART driver implementation
  *
  * @author      Hauke Petersen <hauke.petersen@fu-berlin.de>
- * 
+ *
  * @}
  */
 
@@ -35,7 +35,7 @@ typedef struct {
 
 /**
  * @brief Unified interrupt handler for all UART devices
- * 
+ *
  * @param uartnum       the number of the UART that triggered the ISR
  * @param uart          the UART device that triggered the ISR
  */
@@ -51,30 +51,19 @@ static uart_conf_t config[UART_NUMOF];
 
 int uart_init(uart_t uart, uint32_t baudrate, void (*rx_cb)(char), void (*tx_cb)(void))
 {
-    // vars
-    NVIC_InitTypeDef nvic;
+    int res;
 
-    // do the basic initialization
-    int res = uart_init_blocking(uart, baudrate);
-    if (res == 0) {
+    /* initialize UART in blocking mode first */
+    res = uart_init_blocking(uart, baudrate);
+    if (res < 0) {
         return res;
     }
 
-    // register callbacks
-    config[uart].rx_cb = rx_cb;
-    config[uart].tx_cb = tx_cb;
-
-    // configure interrupts
-    nvic.NVIC_IRQChannelPreemptionPriority = UART_IRQ_PRIO;
-    nvic.NVIC_IRQChannelSubPriority = 0x01;
-    nvic.NVIC_IRQChannelCmd = ENABLE;
-
-    // port specific configuration
+    /* enable global interrupt and configure the interrupts priority */
     switch (uart) {
         case UART_0:
-            // setup irq
-            nvic.NVIC_IRQChannel = UART_0_IRQ;
-            NVIC_Init(&nvic);
+            NVIC_SetPriority(UART_0_IRQ, UART_IRQ_PRIO);
+            NVIC_EnableIRQ(GPIO_2_IRQ);
             // enable receive interrupt
             USART_ITConfig(UART_0_DEV, USART_IT_RXNE, ENABLE);
             break;
@@ -89,6 +78,16 @@ int uart_init(uart_t uart, uint32_t baudrate, void (*rx_cb)(char), void (*tx_cb)
         default:
             return -2;
     }
+
+    // register callbacks
+    config[uart].rx_cb = rx_cb;
+    config[uart].tx_cb = tx_cb;
+
+    // configure interrupts
+    nvic.NVIC_IRQChannelPreemptionPriority = UART_IRQ_PRIO;
+    nvic.NVIC_IRQChannelSubPriority = 0x01;
+    nvic.NVIC_IRQChannelCmd = ENABLE;
+
     return 0;
 }
 

@@ -9,12 +9,12 @@
 /**
  * @ingroup     driver_periph
  * @{
- * 
+ *
  * @file        timer.c
  * @brief       Low-level timer driver implementation
  *
  * @author      Hauke Petersen <hauke.petersen@fu-berlin.de>
- * 
+ *
  * @}
  */
 
@@ -95,12 +95,16 @@ int timer_set(tim_t dev, int channel, unsigned int timeout)
     int now = timer_read(dev);
     TIM_TypeDef *timer = NULL;
     switch (dev) {
+#if TIMER_0_EN
         case TIMER_0:
             timer = TIMER_0_DEV;
             break;
+#endif
+#if TIMER_1_EN
         case TIMER_1:
             timer = TIMER_1_DEV;
             break;
+#endif
         case TIMER_UNDEFINED:
         default:
             return -1;
@@ -136,12 +140,16 @@ int timer_clear(tim_t dev, int channel)
 {
     TIM_TypeDef *timer;
     switch (dev) {
+#if TIMER_0_EN
         case TIMER_0:
             timer = TIMER_0_DEV;
             break;
+#endif
+#if TIMER_1_EN
         case TIMER_1:
             timer = TIMER_1_DEV;
             break;
+#endif
         case TIMER_UNDEFINED:
         default:
             return -1;
@@ -168,12 +176,16 @@ int timer_clear(tim_t dev, int channel)
 unsigned int timer_read(tim_t dev)
 {
     switch (dev) {
+#if TIMER_0_EN
         case TIMER_0:
             return TIMER_0_DEV->CNT;
             break;
+#endif
+#if TIMER_1_EN
         case TIMER_1:
             return TIMER_1_DEV->CNT;
             break;
+#endif
         case TIMER_UNDEFINED:
         default:
             return 0;
@@ -183,12 +195,16 @@ unsigned int timer_read(tim_t dev)
 void timer_start(tim_t dev)
 {
     switch (dev) {
+#if TIMER_0_EN
         case TIMER_0:
             TIMER_0_DEV->CR1 |= TIM_CR1_CEN;
             break;
+#endif
+#if TIMER_1_EN
         case TIMER_1:
             TIMER_1_DEV->CR1 |= TIM_CR1_CEN;
             break;
+#endif
         case TIMER_UNDEFINED:
             break;
     }
@@ -197,12 +213,16 @@ void timer_start(tim_t dev)
 void timer_stop(tim_t dev)
 {
     switch (dev) {
+#if TIMER_0_EN
         case TIMER_0:
             TIMER_0_DEV->CR1 &= ~TIM_CR1_CEN;
             break;
+#endif
+#if TIMER_1_EN
         case TIMER_1:
             TIMER_1_DEV->CR1 &= ~TIM_CR1_CEN;
             break;
+#endif
         case TIMER_UNDEFINED:
             break;
     }
@@ -211,12 +231,16 @@ void timer_stop(tim_t dev)
 void timer_irq_enable(tim_t dev)
 {
     switch (dev) {
+#if TIMER_0_EN
         case TIMER_0:
             NVIC_EnableIRQ(TIMER_0_IRQ_CHAN);
             break;
+#endif
+#if TIMER_1_EN
         case TIMER_1:
             NVIC_EnableIRQ(TIMER_1_IRQ_CHAN);
             break;
+#endif
         case TIMER_UNDEFINED:
             break;
     }
@@ -225,12 +249,16 @@ void timer_irq_enable(tim_t dev)
 void timer_irq_disable(tim_t dev)
 {
     switch (dev) {
+#if TIMER_0_EN
         case TIMER_0:
             NVIC_DisableIRQ(TIMER_0_IRQ_CHAN);
             break;
+#endif
+#if TIMER_1_EN
         case TIMER_1:
             NVIC_DisableIRQ(TIMER_1_IRQ_CHAN);
             break;
+#endif
         case TIMER_UNDEFINED:
             break;
     }
@@ -239,17 +267,23 @@ void timer_irq_disable(tim_t dev)
 void timer_reset(tim_t dev)
 {
     switch (dev) {
+#if TIMER_0_EN
         case TIMER_0:
-            TIMER_0_DEV->CR = 0;
+            TIMER_0_DEV->CNT = 0;
             break;
+#endif
+#if TIMER_1_EN
         case TIMER_1:
-            TIMER_1_DEV->CR = 0;
+            TIMER_1_DEV->CNT = 0;
             break;
+#endif
         case TIMER_UNDEFINED:
             break;
     }
 }
 
+
+#if TIMER_0_EN
 __attribute__ ((naked))
 void TIMER_0_ISR(void)
 {
@@ -257,7 +291,9 @@ void TIMER_0_ISR(void)
     irq_handler(TIMER_0, TIMER_0_DEV);
     ISR_EXIT();
 }
+#endif
 
+#if TIMER_1_EN
 __attribute__ ((naked))
 void TIMER_1_ISR(void)
 {
@@ -265,27 +301,28 @@ void TIMER_1_ISR(void)
     irq_handler(TIMER_1, TIMER_1_DEV);
     ISR_EXIT();
 }
+#endif
 
 static inline void irq_handler(tim_t timer, TIM_TypeDef *dev)
 {
-    if (timer->SR & TIM_SR_CC1IF) {
-        timer->DIER &= ~TIM_DIER_CC1IE;
-        timer->SR &= ~TIM_SR_CC1IF;
+    if (dev->SR & TIM_SR_CC1IF) {
+        dev->DIER &= ~TIM_DIER_CC1IE;
+        dev->SR &= ~TIM_SR_CC1IF;
         config[timer].cb(0);
     }
-    else if (timer->TIM_SR_CC2IF) {
-        timer->DIER &= ~TIM_DIER_CC2IE;
-        timer->SR &= ~TIM_SR_CC2IF;
+    else if (dev->SR & TIM_SR_CC2IF) {
+        dev->DIER &= ~TIM_DIER_CC2IE;
+        dev->SR &= ~TIM_SR_CC2IF;
         config[timer].cb(1);
     }
-    else if (timer->TIM_SR_CC3IF) {
-        timer->DIER &= ~TIM_DIER_CC3IE;
-        timer->SR &= ~TIM_SR_CC3IF;
+    else if (dev->SR & TIM_SR_CC3IF) {
+        dev->DIER &= ~TIM_DIER_CC3IE;
+        dev->SR &= ~TIM_SR_CC3IF;
         config[timer].cb(2);
     }
-    else if (timer->TIM_SR_CC4IF) {
-        timer->DIER &= ~TIM_DIER_CC4IE;
-        timer->SR &= ~TIM_SR_CC4IF;
+    else if (dev->SR & TIM_SR_CC4IF) {
+        dev->DIER &= ~TIM_DIER_CC4IE;
+        dev->SR &= ~TIM_SR_CC4IF;
         config[timer].cb(3);
     }
 }
