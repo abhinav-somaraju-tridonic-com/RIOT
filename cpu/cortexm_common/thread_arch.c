@@ -143,17 +143,6 @@ void enter_thread_mode(void)
     __set_CONTROL(mode.w);
 
 #ifdef CORTEX_M0
-    /* load pdc->stackpointer in r0 */
-    asm("ldr    r0, =active_thread" );      /* r0 = &active_thread */
-    asm("ldr    r0, [r0]"           );      /* r0 = *r0 = active_thread */
-    asm("ldr    sp, [r0]"           );      /* sp = r0  restore stack pointer*/
-    //asm("msr    psp, r0"             );
-    asm("pop    {r4}"               );      /* skip exception return */
-    asm("pop    {r4-r11}"           );
-    asm("pop    {r0-r3,r12,lr}"     );      /* get registers from stack */
-    asm("pop    {r4}"               );      /* get PC */
-    asm("pop    {r5}"               );      /* discard the xPSR entry */
-    asm("mov    pc, r4"             );      /* load PC */
 #else
     /* load pdc->stackpointer in r0 */
     asm("ldr    r0, =active_thread" );      /* r0 = &active_thread */
@@ -202,7 +191,6 @@ __attribute__((always_inline)) static __INLINE void context_save(void)
 #if CORTEX_M0
 
 #else
-    asm(".thumb");
     asm("mrs    r0, psp"            );      /* get stack pointer from user mode */
     asm("stmdb  r0!,{r4-r11}"       );      /* save regs */
     asm("stmdb  r0!,{lr}"           );      /* exception return value */
@@ -216,14 +204,7 @@ __attribute__((always_inline)) static __INLINE void context_save(void)
 __attribute__((always_inline)) static __INLINE void context_restore(void)
 {
 #ifdef CORTEX_M0
-    asm("ldr    r0, =active_thread" );      /* load address of current TCB */
-    asm("ldr    r0, [r0]"           );      /* dereference TCB */
-    asm("ldr    r1, [r0]"           );      /* load tcb->sp to register 1 */
-    asm("ldmia  r1!, {r0}"          );      /* restore exception return value from stack */
-/*  asm("pop    {s16-s31}"          ); */   /* TODO load FPU register if needed depends on r0 exret */
-    asm("ldmia  r1!, {r4-r11}"      );      /* restore other registers */
-    asm("msr    psp, r1"            );      /* restore PSP register (user mode SP)*/
-    asm("bx     r0"                 );      /* load exception return value to PC causes end of exception*/
+
 #else
     asm("ldr    r0, =active_thread" );      /* load address of current TCB */
     asm("ldr    r0, [r0]"           );      /* dereference TCB */
