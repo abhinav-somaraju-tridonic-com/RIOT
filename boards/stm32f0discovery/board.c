@@ -35,15 +35,20 @@ void board_init(void)
 
     /* initialize the boards LEDs */
     leds_init();
+
+    for (int i = 0; i < 10000000; i++) {
+        LD3_TOGGLE;
+        LD4_TOGGLE;
+    }
 }
 
 
 /**
  * @brief Initialize the boards on-board LEDs (LD3 and LD4)
- * 
+ *
  * The LED initialization is hard-coded in this function. As the LEDs are soldered
  * onto the board they are fixed to their CPU pins.
- * 
+ *
  * The LEDs are connected to the following pins:
  * - LD3: PC8
  * - LD4: PC9
