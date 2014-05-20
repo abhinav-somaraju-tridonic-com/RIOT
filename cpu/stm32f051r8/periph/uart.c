@@ -18,6 +18,7 @@
  * @}
  */
 
+#include <math.h>
 
 #include "cpu.h"
 #include "periph_conf.h"
@@ -48,7 +49,6 @@ static inline void irq_handler(uart_t uartnum, USART_TypeDef *uart);
 static uart_conf_t config[UART_NUMOF];
 
 
-
 int uart_init(uart_t uart, uint32_t baudrate, void (*rx_cb)(char), void (*tx_cb)(void))
 {
     int res;
@@ -63,84 +63,94 @@ int uart_init(uart_t uart, uint32_t baudrate, void (*rx_cb)(char), void (*tx_cb)
     switch (uart) {
         case UART_0:
             NVIC_SetPriority(UART_0_IRQ, UART_IRQ_PRIO);
-            NVIC_EnableIRQ(GPIO_2_IRQ);
-            // enable receive interrupt
-            USART_ITConfig(UART_0_DEV, USART_IT_RXNE, ENABLE);
+            NVIC_EnableIRQ(UART_0_IRQ);
+            UART_0_DEV->CR1 |= USART_CR1_RXNEIE;
             break;
         case UART_1:
-            // setup irq
-            nvic.NVIC_IRQChannel = UART_1_IRQ;
-            NVIC_Init(&nvic);
-            // enable receive interrupt
-            USART_ITConfig(UART_1_DEV, USART_IT_RXNE, ENABLE);
+            NVIC_SetPriority(UART_1_IRQ, UART_IRQ_PRIO);
+            NVIC_EnableIRQ(UART_1_IRQ);
+            UART_0_DEV->CR1 |= USART_CR1_RXNEIE;
             break;
         case UART_UNDEFINED:
         default:
             return -2;
     }
 
-    // register callbacks
+    /* register callbacks */
     config[uart].rx_cb = rx_cb;
     config[uart].tx_cb = tx_cb;
-
-    // configure interrupts
-    nvic.NVIC_IRQChannelPreemptionPriority = UART_IRQ_PRIO;
-    nvic.NVIC_IRQChannelSubPriority = 0x01;
-    nvic.NVIC_IRQChannelCmd = ENABLE;
 
     return 0;
 }
 
 int uart_init_blocking(uart_t uart, uint32_t baudrate)
 {
-    // vars
-    USART_InitTypeDef uart_init;
-    GPIO_InitTypeDef gpio;
+    USART_TypeDef *dev;
+    GPIO_TypeDef *port;
+    uint32_t rx_pin, tx_pin;
+    uint8_t af;
+    float divider;
+    uint16_t mantissa;
+    uint8_t fraction;
 
-    // assing std values
-    gpio.GPIO_Mode = GPIO_Mode_AF;
-    gpio.GPIO_Speed = GPIO_Speed_50MHz;
-    gpio.GPIO_OType = GPIO_OType_PP;
-    gpio.GPIO_PuPd = GPIO_PuPd_NOPULL;
-
-    uart_init.USART_BaudRate = baudrate;
-    uart_init.USART_WordLength = USART_WordLength_8b;
-    uart_init.USART_StopBits = USART_StopBits_1;
-    uart_init.USART_Parity = USART_Parity_No;
-    uart_init.USART_Mode = USART_Mode_Rx | USART_Mode_Tx;
-    uart_init.USART_HardwareFlowControl = USART_HardwareFlowControl_None;
-
+    /* enable UART and port clocks and select devices */
     switch (uart) {
         case UART_0:
-            // enable clocks
+            dev = UART_0_DEV;
+            port = UART_0_PORT;
+            rx_pin = UART_0_RX_PIN;
+            tx_pin = UART_0_TX_PIN;
+            af = UART_0_AF;
+            /* enable clocks */
             UART_0_CLKEN();
             UART_0_PORT_CLKEN();
-            // configure pins
-            gpio.GPIO_Pin = UART_0_PINS;
-            GPIO_Init(UART_0_PORT, &gpio);
-            UART_0_RX_AFCFG();
-            UART_0_TX_AFCFG();
-            // setup UART devic
-            USART_Init(UART_0_DEV, &uart_init);
-            USART_Cmd(UART_0_DEV, ENABLE);
             break;
         case UART_1:
-            // enable clocks
+            dev = UART_1_DEV;
+            port = UART_1_PORT;
+            tx_pin = UART_1_TX_PIN;
+            rx_pin = UART_1_RX_PIN;
+            af = UART_1_AF;
+            /* enable clocks */
             UART_1_CLKEN();
             UART_1_PORT_CLKEN();
-            // configure pins
-            gpio.GPIO_Pin = UART_1_PINS;
-            GPIO_Init(UART_1_PORT, &gpio);
-            UART_1_RX_AFCFG();
-            UART_1_TX_AFCFG();
-            // setup UART device
-            USART_Init(UART_1_DEV, &uart_init);
-            USART_Cmd(UART_1_DEV, ENABLE);
             break;
         case UART_UNDEFINED:
         default:
             return -2;
     }
+
+    /* configure RX and TX pins, set pin to use alternative function mode */
+    port->MODER &= ~(3 << (rx_pin * 2) | 3 << (tx_pin * 2));
+    port->MODER |= 2 << (rx_pin * 2) | 2 << (tx_pin * 2);
+    /* and assign alternative function */
+    if (rx_pin < 8) {
+        port->AFR[0] &= ~(0xf << (rx_pin * 4));
+        port->AFR[0] |= af << (rx_pin * 4);
+    }
+    else {
+        port->AFR[1] &= ~(0xf << ((rx_pin - 16) * 4));
+        port->AFR[1] |= af << ((rx_pin - 16) * 4);
+    }
+    if (tx_pin < 8) {
+        port->AFR[0] &= ~(0xf << (tx_pin * 4));
+        port->AFR[0] |= af << (tx_pin * 4);
+    }
+    else {
+        port->AFR[1] &= ~(0xf << ((tx_pin - 16) * 4));
+        port->AFR[1] |= af << ((tx_pin - 16) * 4);
+    }
+
+    /* configure UART to mode 8N1 with given baudrate */
+    divider = ((float)UART_CLK) / (16 * baudrate);
+    mantissa = (uint16_t)floorf(divider);
+    fraction = (uint8_t)floorf((divider - mantissa) * 16);
+    dev->BRR = 0;
+    dev->BRR |= ((mantissa & 0x0fff) << 4) | (0x0f & fraction);
+
+    /* enable receive and transmit mode */
+    dev->CR1 |= USART_CR1_UE | USART_CR1_TE | USART_CR1_RE;
+
     return 0;
 }
 
@@ -149,10 +159,10 @@ void uart_tx_begin(uart_t uart)
 {
     switch (uart) {
         case UART_0:
-            USART_ITConfig(UART_0_DEV, USART_IT_TXE, ENABLE);
+            UART_0_DEV->CR1 |= USART_CR1_TXEIE;
             break;
         case UART_1:
-            USART_ITConfig(UART_1_DEV, USART_IT_TXE, ENABLE);
+            UART_1_DEV->CR1 |= USART_CR1_TXEIE;
             break;
         case UART_UNDEFINED:
             break;
@@ -163,10 +173,10 @@ void uart_tx_end(uart_t uart)
 {
     switch (uart) {
         case UART_0:
-            USART_ITConfig(UART_0_DEV, USART_IT_TXE, DISABLE);
+            UART_0_DEV->CR1 &= ~USART_CR1_TXEIE;
             break;
         case UART_1:
-            USART_ITConfig(UART_1_DEV, USART_IT_TXE, DISABLE);
+            UART_1_DEV->CR1 &= ~USART_CR1_TXEIE;
             break;
         case UART_UNDEFINED:
             break;
@@ -175,63 +185,72 @@ void uart_tx_end(uart_t uart)
 
 int uart_write(uart_t uart, char data)
 {
+    USART_TypeDef *dev;
+
     switch (uart) {
         case UART_0:
-            if (USART_GetFlagStatus(UART_0_DEV, USART_FLAG_TXE) == SET) {
-                USART_SendData(UART_0_DEV, (uint16_t)data);
-                return 1;
-            }
+            dev = UART_0_DEV;
             break;
         case UART_1:
-            if (USART_GetFlagStatus(UART_1_DEV, USART_FLAG_TXE) == SET) {
-                USART_SendData(UART_1_DEV, (uint16_t)data);
-                return 1;
-            }
+            dev = UART_1_DEV;
             break;
         case UART_UNDEFINED:
         default:
             return -1;
     }
+
+    if (dev->ISR & USART_ISR_TXE) {
+        dev->TDR = (uint8_t)data;
+    }
+
     return 0;
 }
 
 int uart_read_blocking(uart_t uart, char *data)
 {
+    USART_TypeDef *dev;
+
     switch (uart) {
         case UART_0:
-            while (USART_GetFlagStatus(UART_0_DEV, USART_FLAG_RXNE) == RESET);
-            *data = (char)USART_ReceiveData(UART_0_DEV);
+            dev = UART_0_DEV;
             break;
         case UART_1:
-            while (USART_GetFlagStatus(UART_1_DEV, USART_FLAG_RXNE) == RESET);
-            *data = (char)USART_ReceiveData(UART_1_DEV);
+            dev = UART_1_DEV;
             break;
         case UART_UNDEFINED:
         default:
             return -1;
     }
+
+    while (!(dev->ISR & USART_ISR_RXNE));
+    *data = (char)dev->TDR;
+
     return 1;
 }
 
 int uart_write_blocking(uart_t uart, char data)
 {
+    USART_TypeDef *dev;
+
     switch (uart) {
         case UART_0:
-            while (USART_GetFlagStatus(UART_0_DEV, USART_FLAG_TXE) == RESET);
-            USART_SendData(UART_0_DEV, (uint16_t)data);
+            dev = UART_0_DEV;
             break;
         case UART_1:
-            while (USART_GetFlagStatus(UART_1_DEV, USART_FLAG_TXE) == RESET);
-            USART_SendData(UART_1_DEV, (uint16_t)data);
+            dev = UART_1_DEV;
             break;
         case UART_UNDEFINED:
         default:
             return -1;
     }
+
+    while (!(dev->ISR & USART_ISR_TXE));
+    dev->TDR = (uint8_t)data;
+
     return 1;
 }
 
-
+__attribute__((naked))
 void UART_0_ISR(void)
 {
     ISR_ENTER();
@@ -239,6 +258,7 @@ void UART_0_ISR(void)
     ISR_EXIT();
 }
 
+__attribute__((naked))
 void UART_1_ISR(void)
 {
     ISR_ENTER();
@@ -247,12 +267,13 @@ void UART_1_ISR(void)
 }
 
 
-static inline void irq_handler(uint8_t uartnum, USART_TypeDef *uart)
+static inline void irq_handler(uint8_t uartnum, USART_TypeDef *dev)
 {
-    if (USART_GetITStatus(uart, USART_IT_RXNE) == SET) {        // a new byte arrived
-        char data = (char)USART_ReceiveData(uart);
+    if (dev->ISR & USART_ISR_RXNE) {
+        char data = (char)dev->TDR;
         config[uartnum].rx_cb(data);
-    } else if (USART_GetITStatus(uart, USART_IT_TXE) == SET) {  // ready to send new byte
+    }
+    else if (dev->ISR & USART_ISR_TXE) {
         config[uartnum].tx_cb();
     }
 }
