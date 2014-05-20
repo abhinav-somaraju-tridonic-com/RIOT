@@ -55,6 +55,7 @@
 #define UART_0_EN           1
 #define UART_1_EN           1
 #define UART_IRQ_PRIO       1
+#define UART_CLK            14000000
 
 /* UART 0 device configuration */
 #define UART_0_DEV          USART1
@@ -65,9 +66,9 @@
 #define UART_0_PORT         GPIOB
 #define UART_0_PINS         (GPIO_Pin_6 | GPIO_Pin_7)
 #define UART_0_PORT_CLKEN() RCC->AHBENR |= RCC_AHBENR_GPIOBEN
-#define UART_1_RX_PIN       3
-#define UART_1_TX_PIN       2
-#define UART_1_AF           1
+#define UART_0_RX_PIN       3
+#define UART_0_TX_PIN       2
+#define UART_0_AF           1
 
 /* UART 1 device configuration */
 #define UART_1_DEV          USART2

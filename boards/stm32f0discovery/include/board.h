@@ -29,26 +29,10 @@
  */
 #define F_CPU               (48000000UL)
 
-
 /**
  * @name Assign the hardware timer
  */
 #define HW_TIMER            TIMER_0
-
-
-/**
- * @name Example: configure connected NRF24L01+ (radio) device
- * 
- * This is just an example on how to bind (externally or internally) connected
- * devices to the CPUs peripherals.
- * @{
- */
-#define NRF24L01P_NUMOF     (1U)
-#define NRF24L01P_SPI       SPI_0
-#define NRF24L01P_CE        GPIO_0
-#define NRF24L01P_CSN       GPIO_1
-#define NRF24L01P_INT       GPIO_2
-/** @} */
 
 /**
  * @name LED pin definitions
@@ -65,14 +49,18 @@
  */
 #define LD3_ON              LED_PORT->BSRR = LD3_PIN
 #define LD3_OFF             LED_PORT->BRR = LD3_PIN
+#define LD3_TOGGLE
 #define LD4_ON              LED_PORT->BSRR = LD4_PIN
 #define LD4_OFF             LED_PORT->BRR = LD4_PIN
+#define LD4_TOGGLE          LED_PORT->ODR ^= LD4_PIN
 
 /* for compatability to other boards */
 #define LED_GREEN_ON        LD4_ON
 #define LED_GREEN_OFF       LD4_OFF
+#define LED_GREEN_TOGGLE    LD4_TOGGLE
 #define LED_RED_ON          LD3_ON
 #define LED_RED_OFF         LD3_OFF
+#define LED_RED_TOGGLE      LD3_TOGGLE
 /** @} */
 
 
